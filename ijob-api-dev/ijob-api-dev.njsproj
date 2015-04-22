@@ -30,7 +30,13 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="datos\cliente.js" />
+    <Compile Include="datos\dbUsuario.js" />
+    <Compile Include="modelos\usuario.js" />
     <Compile Include="server.js" />
+    <Compile Include="servicios\app.js" />
+    <Compile Include="servicios\seguridad.js" />
+    <Compile Include="servicios\usuarios.js" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <Content Include="Web.config" />
@@ -44,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="modelos\" />
+    <Folder Include="datos\" />
+    <Folder Include="servicios\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
