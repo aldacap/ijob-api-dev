@@ -1,0 +1,10 @@
+{
+  "name": "ijob-api-dev",
+  "version": "0.0.0",
+  "description": "ijob-api-dev",
+  "main": "server.js",
+  "author": {
+    "name": "Damian",
+    "email": ""
+  }
+}
