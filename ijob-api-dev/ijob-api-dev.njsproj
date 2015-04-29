@@ -30,13 +30,19 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="datos\cliente.js" />
-    <Compile Include="datos\dbUsuario.js" />
-    <Compile Include="modelos\usuario.js" />
+    <Compile Include="datos\Cliente.js" />
+    <Compile Include="datos\DBOcupacion.js" />
+    <Compile Include="datos\DBSector.js" />
+    <Compile Include="datos\DBUsuario.js" />
+    <Compile Include="modelos\Ocupacion.js" />
+    <Compile Include="modelos\Sector.js" />
+    <Compile Include="modelos\Usuario.js" />
     <Compile Include="server.js" />
-    <Compile Include="servicios\app.js" />
-    <Compile Include="servicios\seguridad.js" />
-    <Compile Include="servicios\usuarios.js" />
+    <Compile Include="servicios\App.js" />
+    <Compile Include="servicios\Seguridad.js" />
+    <Compile Include="servicios\SrvOcupaciones.js" />
+    <Compile Include="servicios\SrvSectores.js" />
+    <Compile Include="servicios\SrvUsuarios.js" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <Content Include="Web.config" />

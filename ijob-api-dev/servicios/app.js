@@ -20,7 +20,15 @@ app.use(parser.json());
 app.use(parser.urlencoded());
 
 // rutas para los usuarios
-var usuarios = require('./usuarios');
-app.use('/api', usuarios);
+var srvUsuarios = require('./SrvUsuarios');
+app.use('/api', srvUsuarios);
+
+// rutas para los sectores
+var srvSectores = require('./SrvSectores');
+app.use('/api', srvSectores);
+
+// rutas para las ocupaciones
+var srvOcupaciones = require('./SrvOcupaciones');
+app.use('/api', srvOcupaciones);
 
 module.exports = app;

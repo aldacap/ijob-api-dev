@@ -4,18 +4,23 @@
 
 var passport = require('passport');
 // estrategia autenticacion http-bearer
-var BearerStrategy = require('passport-http-bearer').Strategy; 
+var BearerStrategy = require('passport-http-bearer').Strategy;
 
-var Usuario = require('../modelos/usuario'); // modelo de un usuario
+var DBUsuario = require('../datos/dbUsuario');
+var dbUsuario = new DBUsuario();
 
-passport.use(new BearerStrategy(
-    function (token, done) {
-        Usuario.findOne({ token: token }, function (err, user) {
-            if (err) { return done(err); }
-            if (!user) { return done(null, false); }
-            return done(null, user, { scope: 'all' });
-        });
-    }
-));
+//passport.use(new BearerStrategy(
+//    function (token, done) {
+//        dbUsuario.validarUsuario(token,done)
+//    }
+//));
+
+passport
+  .use(new BearerStrategy(onValidarUsuarioDB));
+
+function onValidarUsuarioDB(token, done) {
+    dbUsuario.validarUsuario(token, done);
+}
+
 
 module.exports = passport;

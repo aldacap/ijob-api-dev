@@ -14,11 +14,11 @@ var usuarioSchema = new Schema({
     nombre: { type: String, required: true },
     apellidos: String,
     cedula: { type: Number, unique: true },
-    genero: String,
+    genero: { type: String, unique: true },
     nacimiento: Date, 
     _ubicacion : { type: Schema.Types.ObjectId, ref: 'Ubicacion' },
     ocupaciones : [{ type: Schema.Types.ObjectId, ref: 'Ocupacion' }],
-    direccion: { type: String, required: true } ,
+    direccion: { type: String },
     foto: Buffer,
     creado: Date,
     modificado: Date,
@@ -30,6 +30,6 @@ var usuarioSchema = new Schema({
 
 
 // adiciona las validaciones de campos únicos
-usuarioSchema.plugin(uniqueValidator, { message: 'Error, el valor de {PATH} debe ser único.' });
+usuarioSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
