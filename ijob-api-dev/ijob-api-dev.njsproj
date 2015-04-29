@@ -5,6 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>ijob-api-dev</Name>
     <RootNamespace>ijob-api-dev</RootNamespace>
+    <NameOfLastUsedPublishProfile>ijob-api-dev</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -45,6 +46,7 @@
     <Compile Include="servicios\SrvUsuarios.js" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <None Include="ijob-api-dev.pubxml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config" />
     <Content Include="bin\ChangeConfig.ps1" />
