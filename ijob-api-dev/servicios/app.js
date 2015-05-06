@@ -27,8 +27,8 @@ app.use('/api', srvUsuarios);
 var srvSectores = require('./SrvSectores');
 app.use('/api', srvSectores);
 
-// rutas para las ocupaciones
-var srvOcupaciones = require('./SrvOcupaciones');
-app.use('/api', srvOcupaciones);
+//// rutas para las ocupaciones
+//var srvOcupaciones = require('./SrvOcupaciones');
+//app.use('/api', srvOcupaciones);
 
 module.exports = app;

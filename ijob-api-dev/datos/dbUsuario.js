@@ -39,6 +39,7 @@ function DBUsuario() {
         var nuevoUsuario = new modeloUsuario(reqUsuario.body);
         // asigna un token de seguridad para la autenticación
         nuevoUsuario.token = uuid.v1();
+        nuevoUsuario.admin = false;
         nuevoUsuario.save(onUsuarioGuardado);
     }
     
@@ -49,6 +50,63 @@ function DBUsuario() {
         }
         response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id });
     }
+    
+    // valor local de la ocupacion principal
+    var ocupacion;
+    var indiceOcupacion;
+    // actualizar ocupaciones
+    this.actualizarOcupacion = function (esPrincipal, _idUsuario, reqOcupacion, res) {
+        response = res;
+        ocupacion = reqOcupacion;
+        // inicializa el indice de la aplicación, es 0 o 1
+        indiceOcupacion = esPrincipal ? 0:1;
+        modeloUsuario.findById(_idUsuario, onUsuarioEncontradoPorID);
+    }
+    
+    function onUsuarioEncontradoPorID(err, usuarioEncontrado) {
+        if (err) {
+            return response.send(err);
+        }
+        
+        // instancia la nueva ocupación
+        var nuevaOcupacion = usuarioEncontrado.ocupaciones.create(ocupacion);
+        
+        // remueve y adiciona el primer item
+        if (indiceOcupacion === 0) {
+            if (usuarioEncontrado.ocupaciones.length > 0)
+                usuarioEncontrado.ocupaciones[0].remove();
+            
+            usuarioEncontrado.ocupaciones.unshift(nuevaOcupacion);
+        } else { 
+            // remueve y adiciona el segundo item
+            if (usuarioEncontrado.ocupaciones.length > 1)
+                usuarioEncontrado.ocupaciones[1].remove();
+            usuarioEncontrado.ocupaciones.push(nuevaOcupacion);
+        }
+        
+        //// inicializa un item del array de ocupaciones
+        //if (usuarioEncontrado.ocupaciones.length < indiceOcupacion + 1) {
+        //    usuarioEncontrado.ocupaciones.push(nuevaOcupacion);
+        //} else {
+        //    // usuarioEncontrado.ocupaciones[indiceOcupacion].remove();            
+        //    usuarioEncontrado.ocupaciones[indiceOcupacion] = nuevaOcupacion;
+        //}
+        
+        usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioActualizado) {
+            if (err) return response.send(err);
+            response.json(usuarioActualizado);
+        });
+
+        //for (prop in ocupacionPrincipal) {
+        //    // if (usuario.[prop])
+        //    // usuario.[prop] = req.body[prop];
+        //    usuarioEncontrado.ocupaciones[0][prop] = ocupacionPrincipal[prop];
+        //}
+    }
+    
+    //function handleError(err, data) {
+    //    console.log(err);
+    //}
 }
 
 module.exports = DBUsuario;
