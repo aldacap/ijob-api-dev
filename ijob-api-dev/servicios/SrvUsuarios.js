@@ -18,6 +18,7 @@ router
 });
 
 /**
+ * 
  *  registra la información básica de un usuario
  */
 router

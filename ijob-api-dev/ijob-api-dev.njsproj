@@ -31,8 +31,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="datos\ClienteImagenes.js" />
     <Compile Include="datos\Cliente.js" />
     <Compile Include="datos\DBOcupacion.js" />
+    <Compile Include="datos\DBImagen.js" />
     <Compile Include="datos\DBSector.js" />
     <Compile Include="datos\DBUsuario.js" />
     <Compile Include="modelos\Ocupacion.js" />
@@ -43,10 +45,13 @@
     <Compile Include="servicios\Seguridad.js" />
     <Compile Include="servicios\SrvOcupaciones.js" />
     <Compile Include="servicios\SrvSectores.js" />
+    <Compile Include="servicios\SrvImagenes.js" />
     <Compile Include="servicios\SrvUsuarios.js" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <None Include="ijob-api-dev.pubxml" />
+    <Content Include="vistas\ImagenSubir.html" />
+    <Content Include="vistas\index.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config" />
     <Content Include="bin\ChangeConfig.ps1" />
@@ -60,6 +65,7 @@
     <Folder Include="bin\" />
     <Folder Include="modelos\" />
     <Folder Include="datos\" />
+    <Folder Include="vistas\" />
     <Folder Include="servicios\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

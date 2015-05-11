@@ -10,7 +10,9 @@
         "body-parser": "~1.0.1",
         "passport": ">= 0.0.0",
         "passport-http-bearer": ">= 0.0.0",
-        "uuid": "~2.0"
+        "uuid": "~2.0",
+        "gridfs-stream": "~1.1",
+        "multer": "~0.1"
     },
     "author": {
         "name": "Damian Del Castillo",
