@@ -5,10 +5,10 @@ function DBImagen() {
     var clienteImagenes = require('mongoose');
     var Schema = clienteImagenes.Schema;
     
-    // este valor se debería obtener de un archivo de configuración
-    var dbName = 'ijobi';
-    var connectionString = 'mongodb://localhost:27017/' + dbName;
-    //connectionString = 'mongodb://k1_user:k1_pass@ds043329.mongolab.com:43329/k1db';
+    // carga la cadena de conexión del archivo de configuración
+    var config = require('../config.json');
+    var connectionString = config.devImgConnStr;
+    
     var Grid = require('gridfs-stream');
     Grid.mongo = clienteImagenes.mongo;
     var conn = clienteImagenes.createConnection(connectionString);
@@ -16,12 +16,13 @@ function DBImagen() {
     var fs = require('fs');
     // referencia privada a la respuesta HTTP
     var response;
+    var gfs;
     
     // Carga un archivo desde la carpeta uploads
     this.subirImagen = function (nombreArchivo, res) {
         response = res;
         conn.once('open', function () {
-            var gfs = Grid(conn.db);
+            gfs = Grid(conn.db);
             // streaming to gridfs
             //filename to store in mongodb
             var writestream = gfs.createWriteStream({
@@ -38,14 +39,19 @@ function DBImagen() {
         // elimina el archivo que ya se subio
         fs.unlink('./uploads/' + file.filename, function (err) {
             if (err) response.send(err);
-            return res.send(file._id);
+            return response.send(file);
         });
     }
     
     this.consultarImagen = function (idArchivo, res) {
         response = res;
-        conn.once('open', function () {
-            var gfs = Grid(conn.db);
+        
+        var Grid = require('gridfs-stream');
+        Grid.mongo = clienteImagenes.mongo;
+        var conn = clienteImagenes.createConnection(connectionString);
+        
+        conn.once('open', function onConnectionOpen() {
+            gfs = Grid(conn.db);
             // Valida que exista el archivo
             gfs.findOne({ _id: idArchivo }, onEncontrarImagen);
         });

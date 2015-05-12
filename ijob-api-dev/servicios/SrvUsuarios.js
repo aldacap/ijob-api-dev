@@ -17,10 +17,7 @@ router
     dbUsuario.autenticarUsuario(req.params.correo, req.params.clave, res);
 });
 
-/**
- * 
- *  registra la información básica de un usuario
- */
+// registra la información básica de un usuario
 router
   .route('/usuarios/registrar')
   .post(function (req, res) {

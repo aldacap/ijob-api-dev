@@ -24,15 +24,10 @@ router
   .route('/imagenes')
   .post(function (req, res) {
     if (done == true) {
-        
         var DBImagen = require('../datos/DBImagen');
         var dbImagen = new DBImagen();
-        dbImagen.subirImagen(req.files.userPhoto.name);
-        
-        // console.log(req.files);
-        res.end("Archivo cargado.");
+        dbImagen.subirImagen(req.files.userPhoto.name, res);
     }
 });
-
 
 module.exports = router;
