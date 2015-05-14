@@ -18,12 +18,12 @@ router
 });
   
 /**
- *  consulta la información de una calificacion
+ *  consulta la información de calificaciones recibida o otorgadas
  */
 router
-  .route('/calificaciones/:usuario/:cantidad')
+  .route('/calificaciones/:usuario/:cantidad/:tipo')
   .get(function (req, res) {
-    dbCalificacion.consultarCalificacion(req.params._usuario, req.params.cantidad, res);
+    dbCalificacion.consultarCalificacion(req.params.usuario, req.params.cantidad, req.params.tipo, res);
 });
 
 module.exports = router;

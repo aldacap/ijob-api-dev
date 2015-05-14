@@ -15,7 +15,8 @@ var calificacionSchema = new Schema({
     respeto: { type: Number, required: true },
     puntualidad: { type: Number, required: true },
     observaciones: { type: String },
-    _usuario : { type: Schema.Types.ObjectId, ref: 'Usuario' }
+    _usuarioOtorga : { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' }
 });
 
 

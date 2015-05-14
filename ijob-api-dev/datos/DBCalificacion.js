@@ -29,16 +29,22 @@ function DBCalificacion() {
         response.send({ message: 'OK, calificacion adicionada', _id: calificacionGuardada._id });
     }
     
-    this.consultarCalificacion = function (pUsuario, pCantidad, res) {
+    this.consultarCalificacion = function (pUsuario, pCantidad, pTipo, res) {
         response = res;
-        
-        modeloCalificacion
-         .find({ usuario: pUsuario })
-         .sort({ 'fecha': 'descending' })
-         .limit(pCantidad)
-         .exec(onEncontrarCalificaciones);
+        if (pTipo == 1) {
+          modeloCalificacion
+            .find({ _usuarioOtorga: pUsuario })
+            .sort({ 'fecha': 'descending' })
+            .limit(pCantidad)
+            .exec(onEncontrarCalificaciones);
+        } else {
+          modeloCalificacion
+            .find({ _usuarioRecibe: pUsuario })
+            .sort({ 'fecha': 'descending' })
+            .limit(pCantidad)
+            .exec(onEncontrarCalificaciones);
+        }
     }
-    
     function onEncontrarCalificaciones(err, calificaciones) {
         if (err) {
             return res.send(err);
