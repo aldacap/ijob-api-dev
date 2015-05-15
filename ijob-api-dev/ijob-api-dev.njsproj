@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -33,16 +33,20 @@
   <ItemGroup>
     <Compile Include="datos\ClienteImagenes.js" />
     <Compile Include="datos\Cliente.js" />
+    <Compile Include="datos\DBCalificacion.js" />
     <Compile Include="datos\DBOcupacion.js" />
     <Compile Include="datos\DBImagen.js" />
     <Compile Include="datos\DBSector.js" />
     <Compile Include="datos\DBUsuario.js" />
+    <Compile Include="modelos\Calificacion.js" />
+    <Compile Include="modelos\Contacto.js" />
     <Compile Include="modelos\Ocupacion.js" />
     <Compile Include="modelos\Sector.js" />
     <Compile Include="modelos\Usuario.js" />
     <Compile Include="server.js" />
     <Compile Include="servicios\App.js" />
     <Compile Include="servicios\Seguridad.js" />
+    <Compile Include="servicios\SrvCalificaciones.js" />
     <Compile Include="servicios\SrvOcupaciones.js" />
     <Compile Include="servicios\SrvSectores.js" />
     <Compile Include="servicios\SrvImagenes.js" />
