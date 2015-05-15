@@ -1,0 +1,6 @@
+﻿{
+    "devDatConnStr": "mongodb://localhost:27017/k1db",
+    "prdDatConnStr": "mongodb://k1_user:k1_pass@ds043329.mongolab.com:43329/k1db",
+    "devImgConnStr": "mongodb://localhost:27017/ijobi",
+    "prdImgConnStr": "mongodb://k1_user:k1_pass@ds034348.mongolab.com:34348/ijobi"
+}
