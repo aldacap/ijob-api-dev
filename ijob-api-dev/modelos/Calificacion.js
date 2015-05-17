@@ -1,8 +1,8 @@
 ﻿/**
  *  Calificaciones
  */
-
-var mongoose = require('../datos/cliente');
+var mongoose = require('mongoose');
+var cliente = require('../datos/cliente');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');
@@ -23,4 +23,4 @@ var calificacionSchema = new Schema({
 // adiciona las validaciones de campos únicos
 calificacionSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Calificacion', calificacionSchema);
+module.exports = cliente.model('Calificacion', calificacionSchema);

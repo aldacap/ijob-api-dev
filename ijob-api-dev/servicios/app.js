@@ -40,4 +40,12 @@ app.use('/api', srvUsuarios);
 var srvSectores = require('./SrvSectores');
 app.use('/api', srvSectores);
 
+// rutas para los ubicaciones
+var srvUbicaciones = require('./SrvUbicaciones');
+app.use('/api', srvUbicaciones);
+
+// rutas para los Calificaciones
+var srvCalificaciones = require('./SrvCalificaciones');
+app.use('/api', srvCalificaciones);
+
 module.exports = app;

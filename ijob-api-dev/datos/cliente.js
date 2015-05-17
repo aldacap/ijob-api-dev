@@ -3,9 +3,18 @@ var cliente = require('mongoose');
 
 // carga la cadena de conexión del archivo de configuración
 var config = require('../config.json');
-var connectionString = config.devDatConnStr;
+var conexionCliente = cliente.createConnection(config.devDatConnStr);
 
-// abre una conexión a la base de datos
-cliente.connect(connectionString);
+conexionCliente.on('connected', function onClienteConnected() {
+    console.log('Mongoose connected to devDatConnStr');
+});
 
-module.exports = cliente;
+conexionCliente.on('error', function onClienteError() {
+    console.log('Error on devDatConnStr');
+});
+
+conexionCliente.on('disconnected', function onClienteDesconectado() {
+    console.log('Desconexion on devDatConnStr');
+});
+
+module.exports = conexionCliente;

@@ -1,7 +1,8 @@
 ﻿/**
  *  Sectores de ocupaciones o actividades
  */
-var mongoose = require('../datos/cliente');
+var mongoose = require('mongoose');
+var cliente = require('../datos/cliente');
 var Schema = mongoose.Schema;
 
 // valida los campos únicos
@@ -14,4 +15,4 @@ var sectorSchema = new Schema({
 // adiciona las validaciones de campos únicos
 sectorSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Sector', sectorSchema);
+module.exports = cliente.model('Sector', sectorSchema);

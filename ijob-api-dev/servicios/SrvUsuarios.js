@@ -17,6 +17,13 @@ router
     dbUsuario.autenticarUsuario(req.params.correo, req.params.clave, res);
 });
 
+// envia un correo con la contraseña
+router
+  .route('/usuarios/recordar/:correo')
+  .get(function (req, res) {
+    dbUsuario.recordarClave(req.params.correo, res);
+});
+
 // registra la información básica de un usuario
 router
   .route('/usuarios/registrar')

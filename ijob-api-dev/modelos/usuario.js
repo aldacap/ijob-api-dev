@@ -2,7 +2,8 @@
  *  Todas las personas que tengan acceso al aplicativo
  */
 
-var mongoose = require('../datos/cliente');
+var mongoose = require('mongoose');
+var cliente = require('../datos/Cliente.js');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');
@@ -39,4 +40,4 @@ var usuarioSchema = new Schema({
 // adiciona las validaciones de campos únicos
 usuarioSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
+module.exports = cliente.model('Usuario', usuarioSchema);

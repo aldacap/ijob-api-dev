@@ -1,8 +1,8 @@
 ﻿/**
  *  Contacto
  */
-
-var mongoose = require('../datos/cliente');
+var mongoose = require('mongoose');
+var cliente = require('../datos/cliente');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');
@@ -19,4 +19,4 @@ var contactoSchema = new Schema({
 // adiciona validación de campos únicos
 contactoSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Calificacion', contactoSchema);
+module.exports = cliente.model('Contacto', contactoSchema);
