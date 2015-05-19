@@ -3,47 +3,126 @@
 <head>
     <meta charset="utf-8" />
     <title>K1 Rest API</title>
+    <style>
+        ul {
+            color: brown;
+            font-weight: bold;
+            padding: 0 0 0-5px;
+            margin: 0 0 0-5px;
+        }
+
+        li {
+            color: darkseagreen;
+            padding: 5px 0 0 0;
+            margin: 5px 0 0 0;
+            font-weight: normal;
+        }
+
+            li > a {
+                font-weight: bold;
+                color: darkblue;
+            }
+
+        em {
+            color: darkslateblue;
+            padding: 2px 0 5px 10px;
+            margin: 2px 0 5px 10px;
+        }
+    </style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div style="padding:20px;margin:20px;font-family: Arial !important;">
         <h2>K1 Rest API</h2>
         <h3>Damian Del Castillo 2015</h3>
-        <b>Todos los servicios se encuentran dentro de la ruta /api</b>
-        <br />Usuarios
-        <ul>
-            <li>get:/autenticar/{usuario}{clave}</li>
-            <li>post:/usuarios/registrar/{nombre}{apellidos}{correo}{cedula}{activo}{direccion}{clave}</li>
-        </ul>Sectores
-        <ul>
-            <li>get:/sectores/</li>
-            <li>post:/sectores/{nombre}</li>
-        </ul>Ocupaciones
-        <ul>
-            <li>get:/ocupaciones/</li>
-            <li>post:/ocupaciones/{nombre}{descripcion}{_sector}</li>
-        </ul>Imágenes
-        <ul>
-            <li>get:/imagenes/</li>
-            <li>get:/imagenes/{idImagen}</li>
-            <li>post:/imagenes/{userPhoto(input-file)}</li>
-        </ul>
-        Ubicaciones
-        <ul>
-            <li>get:/Ubicaciones/</li>
-            <li>post:/Ubicaciones/{codigo}{municipio}{departamento}{pais}</li>
-        </ul>
-        Calificaciones (tipo: 1 = otorgadas, 2 = recibidas)
-        <ul>
-            <li>get:/calificaciones/{idUsuario}{cantidad}{tipo}</li>
-            <li>post:/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}</li>
-        </ul>
-        Contactos (estado: 0 = solicitud sin contestar, 1 = solicitud aceptada y 2 = solicitud rechazada)
-        <ul>
-            <li>get:/contactos/{idUsuario}</li>
-            <li>post:/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</li>
-            <li>put:/contactos/{idContacto}{estado}</li>
-        </ul>
-        <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
+        <h4>Los métodos privados deben llevar un token válido en el parametro <em>access_token</em></h4>
+        <h4>Todos los servicios se encuentran dentro de la ruta <a href='#'>/api</a></h4>
+        <fieldset>
+            <legend>Métodos</legend>
+            <ul>
+                Usuarios
+                <li>
+                    get:<a href='#'>/autenticar/:correo/:clave</a>
+                    <br /><em>autentica un usuario mediante correo y clave</em>
+                </li>
+                <li>
+                    get:<a href='#'>/usuarios/recordar/:correo</a><br />
+                    <em>envia un correo con la contraseña</em>
+                </li>
+                <li>
+                    post:<a href='#'>/usuarios/registrar/{nombre}{apellidos}{correo}{cedula}{activo}{direccion}{clave}</a><br />
+                    <em>registra la información básica de un usuario</em>
+                </li>
+                <li>
+                    get:<a href='#'>/usuarios/imagen</a><br />
+                    <em>formulario para cargar una imagen, solo para desarrollo</em>
+                </li>
+                <li>
+                    post:<a href='#'>/usuarios/imagen/:id</a><br />
+                    <em>actualizar la foto de perfil</em>
+                </li>
+                <li>
+                    get:<a href='#'>/usuarios/imagen/:id</a><br />
+                    <em>consulta la imagen del perfil</em>
+                </li>
+            </ul>
+            <ul>
+                Sectores
+                <li>
+                    get:<a href='#'>/sectores/</a><br />
+                    <em>consulta los sectores que se pueden asociar a una ocupación</em>
+                </li>
+                <li>
+                    post:<a href='#'>/sectores/{nombre}</a><br />
+                    <em>registra la información básica de un sector</em>
+                </li>
+            </ul>
+            <ul>
+                Ubicaciones
+                <li>
+                    get:<a href='#'>/Ubicaciones/</a><br />
+                    <em>lista de las ubicaciones Pais, Municipio, Departamento</em>
+                </li>
+                <li>
+                    post:<a href='#'>/Ubicaciones/{codigo}{municipio}{departamento}{pais}</a><br />
+                    <em>registra la información básica de una Ubicacion</em>
+                </li>
+            </ul>
+            <ul>
+                Calificaciones (tipo: 1 = otorgadas, 2 = recibidas)
+                <li>
+                    get:<a href='#'>/calificaciones/:usuario/:cantidad/:tipo</a><br />
+                    <em>método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tiopo2 = recibidas</em>
+                </li>
+                <li>
+                    post:<a href='#'>/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}</a><br />
+                    <em>método para realizar una calificación, los parametros de calidad, respeto y puntualidad son numericos de 1 a 5, se debe enviar el id del usuario que califica (idUsuarioOtorga) como el que es calificado (idUsuarioRecibe)</em>
+                </li>
+            </ul>
+            <ul>
+                Contactos (estado: 0 = solicitud sin contestar, 1 = solicitud aceptada y 2 = solicitud rechazada)
+                <li>
+                    get:<a href='#'>/contactos/{idUsuario}</a><br />
+                    <em>método para obtener las solicitudes de contacto pendientes o sin responder</em>
+                </li>
+                <li>
+                    post:<a href='#'>/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</a><br />
+                    <em>método para realizar una solicitud, es decir cuando un usuario selecciona a un prestador de servicios y solicita contacto, se envía los id de los dos usuarios.</em>
+                </li>
+                <li>
+                    put:<a href='#'>/contactos/{idContacto}{estado}</a><br />
+                    <em>método para responder a una solicitud de contacto, la solicitud pendiente está en estado=0, si se acepta la solicitud sería estado=1 y si rechaza la solicitud será estado=2, se debe enviar el id de la solicitud de contacto un prestador de servicios puede tener varias solicitudes.</em>
+                </li>
+            </ul>
+            <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
+        </fieldset>
     </div>
 </body>
 </html>
