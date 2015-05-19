@@ -34,6 +34,7 @@
     <Compile Include="datos\ClienteImagenes.js" />
     <Compile Include="datos\Cliente.js" />
     <Compile Include="datos\DBCalificacion.js" />
+    <Compile Include="datos\DBContacto.js" />
     <Compile Include="datos\DBOcupacion.js" />
     <Compile Include="datos\DBImagen.js" />
     <Compile Include="datos\DBSector.js" />
@@ -50,6 +51,7 @@
     <Compile Include="servicios\App.js" />
     <Compile Include="servicios\Seguridad.js" />
     <Compile Include="servicios\SrvCalificaciones.js" />
+    <Compile Include="servicios\SrvContactos.js" />
     <Compile Include="servicios\SrvOcupaciones.js" />
     <Compile Include="servicios\SrvSectores.js" />
     <Compile Include="servicios\SrvImagenes.js" />

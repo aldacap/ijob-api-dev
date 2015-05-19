@@ -32,6 +32,17 @@
             <li>get:/Ubicaciones/</li>
             <li>post:/Ubicaciones/{codigo}{municipio}{departamento}{pais}</li>
         </ul>
+        Calificaciones (tipo: 1 = otorgadas, 2 = recibidas)
+        <ul>
+            <li>get:/calificaciones/{idUsuario}{cantidad}{tipo}</li>
+            <li>post:/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}</li>
+        </ul>
+        Contactos (estado: 0 = solicitud sin contestar, 1 = solicitud aceptada y 2 = solicitud rechazada)
+        <ul>
+            <li>get:/contactos/{idUsuario}</li>
+            <li>post:/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</li>
+            <li>put:/contactos/{idContacto}{estado}</li>
+        </ul>
         <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
     </div>
 </body>

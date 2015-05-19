@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 
 var contactoSchema = new Schema({
     fecha: { type: Date, default: Date.now },
-    estado: { typpe: Number, required: true },
+    estado: { type: Number, default: 0 },
     _usuarioSolicita : { type: Schema.Types.ObjectId, ref: 'Usuario' },
     _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' }
 });
