@@ -19,7 +19,7 @@ var usuarioSchema = new Schema({
     nombre: { type: String, required: true },
     apellidos: String,
     cedula: { type: Number, unique: true },
-    genero: { type: String, required: true },
+    genero: { type: String, required: true, enum: ['Masculino', 'Femenino'] },
     nacimiento: Date, 
     _ubicacion : { type: Schema.Types.ObjectId, ref: 'Ubicacion' },
     ocupaciones : [ocupacionSchema],

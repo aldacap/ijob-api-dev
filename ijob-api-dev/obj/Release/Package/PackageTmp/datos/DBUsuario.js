@@ -66,7 +66,7 @@ function DBUsuario() {
         ocupacion = reqOcupacion;
         // inicializa el indice de la aplicación, es 0 o 1
         indiceOcupacion = esPrincipal ? 0:1;
-        modeloUsuario.findById(_idUsuario, onUsuarioEncontradoPorID);
+        modeloUsuario.findById(_idUsuario, 'correo ocupaciones', onUsuarioEncontradoPorID);
     }
     
     function onUsuarioEncontradoPorID(err, usuarioEncontrado) {
@@ -132,6 +132,30 @@ function DBUsuario() {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         dbImagen.consultarImagen(usuarioEncontrado._imagen, response);
+    }
+    
+    var usuarioActualizar;
+    // Actualiza un usuario
+    this.actualizarUsuario = function (_idUsuario, reqUsuario, res) {
+        response = res;
+        usuarioActualizar = reqUsuario;
+        modeloUsuario.findById(_idUsuario, onActualizarUsuarioEncontrado);
+    }
+    // encuentra un usuario en la BD con el id 
+    function onActualizarUsuarioEncontrado(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        
+        for (var field in usuarioActualizar) {
+            usuarioEncontrado[field] = usuarioActualizar[field];
+        }
+        
+        usuarioEncontrado.save(onActualizarUsuarioGuardado);
+    }
+    // Actualiza un usuario satisfatoriamente
+    function onActualizarUsuarioGuardado(err, usuarioGuardado) {
+        if (err) return response.send(err);
+        response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
     }
 }
 

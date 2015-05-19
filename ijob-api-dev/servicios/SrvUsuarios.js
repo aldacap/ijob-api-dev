@@ -28,6 +28,13 @@ router
     dbUsuario.registrarUsuario(req, res);
 });
 
+// actualizar parcialmente un usuario
+router
+  .route('/usuarios/:id')
+  .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+    dbUsuario.actualizarUsuario(req.params.id , req.body, res);
+});
+
 // actualizar ocupacion principal
 router
   .route('/usuarios/principal/:id')
