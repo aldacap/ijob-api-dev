@@ -57,8 +57,6 @@
     <Compile Include="servicios\SrvImagenes.js" />
     <Compile Include="servicios\SrvUbicaciones.js" />
     <Compile Include="servicios\SrvUsuarios.js" />
-    <Content Include=".gitattributes" />
-    <Content Include=".gitignore" />
     <None Include="ijob-api-dev.pubxml" />
     <Content Include="config.json" />
     <Content Include="vistas\ImagenSubir.html" />
