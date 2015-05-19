@@ -9,13 +9,13 @@ function DBCalificacion() {
     
     // Adiciona una nueva calificacion
     this.agregarCalificacion = function (reqCalificacion, res) {
-        response = res;        
+        response = res;
         var c = parseInt(reqCalificacion.body.calidad, 10);
         var r = parseInt(reqCalificacion.body.respeto, 10);
         var p = parseInt(reqCalificacion.body.puntualidad, 10);
         var result = Math.round((c + r + p) * 10 / 3) / 10;
         reqCalificacion.body.puntuacion = result;
-       
+        
         // instancia una calificacion con los datos que vienen en el request
         var nuevaCalificacion = new modeloCalificacion(reqCalificacion.body);
         nuevaCalificacion.save(onCalificacionGuardada);
@@ -29,22 +29,25 @@ function DBCalificacion() {
         response.send({ message: 'OK, calificacion adicionada', _id: calificacionGuardada._id });
     }
     
+    // Obtiene calificaciones otorgadas o recibidas
     this.consultarCalificacion = function (pUsuario, pCantidad, pTipo, res) {
         response = res;
         if (pTipo == 1) {
-          modeloCalificacion
+            modeloCalificacion
             .find({ _usuarioOtorga: pUsuario })
             .sort({ 'fecha': 'descending' })
             .limit(pCantidad)
             .exec(onEncontrarCalificaciones);
         } else {
-          modeloCalificacion
+            modeloCalificacion
             .find({ _usuarioRecibe: pUsuario })
             .sort({ 'fecha': 'descending' })
             .limit(pCantidad)
             .exec(onEncontrarCalificaciones);
         }
     }
+    
+    // resultado de consultar calificaciones
     function onEncontrarCalificaciones(err, calificaciones) {
         if (err) {
             return res.send(err);

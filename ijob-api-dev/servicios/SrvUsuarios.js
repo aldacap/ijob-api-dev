@@ -31,14 +31,14 @@ router
 // actualizar ocupacion principal
 router
   .route('/usuarios/principal/:id')
-  .put(seguridad.authenticate('bearer', { session: false }),function (req, res) {
+  .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     dbUsuario.actualizarOcupacion(true, req.params.id , req.body, res);
 });
 
 // actualizar ocupacion principal
 router
   .route('/usuarios/secundaria/:id')
-  .put(seguridad.authenticate('bearer', { session: false }),function (req, res) {
+  .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     dbUsuario.actualizarOcupacion(false, req.params.id , req.body, res);
 });
 
@@ -52,7 +52,7 @@ router
 // actualizar la foto de perfil
 router
   .route('/usuarios/imagen/:id')
-  .post(seguridad.authenticate('bearer', { session: false }),function (req, res) {
+  .post(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     // Valida que se haya subido la imagen
     if (typeof (done) === 'udefined')
         res.end({ 'Error': 'Problemas al subir el archivo, verifique que el archivo este correcto' });
