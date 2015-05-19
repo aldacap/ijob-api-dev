@@ -95,8 +95,34 @@
                     <em>registra la información básica de una Ubicacion</em>
                 </li>
             </ul>
+            <ul>
+                calificaciones
+                <li>
+                    get:<a href='#'>/calificaciones/:usuario/:cantidad/:tipo</a><br />
+                    <em>método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tiopo2 = recibidas</em>
+                </li>
+                <li>
+                    post:<a href='#'>/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}</a><br />
+                    <em>método para realizar una calificación, los parametros de calidad, respeto y puntualidad son numericos de 1 a 5, se debe enviar el id del usuario que califica (idUsuarioOtorga) como el que es calificado (idUsuarioRecibe)</em>
+                </li>
+            </ul>
             <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
         </fieldset>
     </div>
 </body>
 </html>
+
+<!--•get:/calificaciones/{idUsuario}{cantidad}{tipo}
+método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tiopo2 = recibidas
+
+•post:/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}
+método para realizar una calificación, los parametros de calidad, respeto y puntualidad son numericos de 1 a 5, se debe enviar el id del usuario que califica (idUsuarioOtorga) como el que es calificado (idUsuarioRecibe).
+
+•get:/contactos/{idUsuario}
+método para obtener las solicitudes de contacto pendientes o sin responder
+
+•post:/contactos/{idUsuarioSolicita}{idUsuarioRecibe}
+método para realizar una solicitud, es decir cuando un usuario selecciona a un prestador de servicios y solicita contacto, se envía los id de los dos usuarios.
+
+•put:/contactos/{idContacto}{estado}
+método para responder a una solicitud de contacto, la solicitud pendiente está en estado=0, si se acepta la solicitud sería estado=1 y si rechaza la solicitud será estado=2, se debe enviar el id de la solicitud de contacto un prestador de servicios puede tener varias solicitudes.-->
