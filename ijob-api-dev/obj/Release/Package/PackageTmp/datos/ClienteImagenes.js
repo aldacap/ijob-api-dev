@@ -1,13 +1,20 @@
-﻿//// Cliente de imagenes,se utiliza una bd diferente por desempeño y modificabilidad
-//var clienteImagenes = require('mongoose');
-//var Schema = clienteImagenes.Schema;
+﻿// Cliente de base de datos
+var cliente = require('mongoose');
 
-//// este valor se debería obtener de un archivo de configuración
-//var dbName = 'ijobi';
-//var connectionString = 'mongodb://localhost:27017/' + dbName;
-////connectionString = 'mongodb://k1_user:k1_pass@ds043329.mongolab.com:43329/k1db';
-//var Grid = require('gridfs-stream');
-//Grid.mongo = clienteImagenes.mongo;
-//var conn = clienteImagenes.createConnection(connectionString);
+// carga la cadena de conexión del archivo de configuración
+var config = require('../config.json');
+var conexionCliente = cliente.createConnection(config.devImgConnStr);
 
-//module.exports = conn;
+conexionCliente.on('connected', function onClienteConnected() {
+    console.log('Mongoose connected to devImgConnStr');
+});
+
+conexionCliente.on('error', function onClienteError(err) {
+    console.log('Error on devImgConnStr' + err);
+});
+
+conexionCliente.on('disconnected', function onClienteDesconectado() {
+    console.log('Desconexion on devImgConnStr');
+});
+
+module.exports = conexionCliente;

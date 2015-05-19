@@ -5,7 +5,7 @@
 function DBSector() {
     var modeloSector = require('../modelos/Sector');
     // referencia privada a la respuesta HTTP
-    var response;    
+    var response;
     
     // Adiciona un nuevo sector al sistema
     this.crearSector = function (reqSector, res) {
@@ -17,21 +17,17 @@ function DBSector() {
     
     // resultado de guardar un sector
     function onSectorGuardado(err, sectorGuardado) {
-        if (err) {
-            return response.send(err);
-        }
+        if (err) return response.send(err);
         response.send({ message: 'OK, sector adicionado', _id: sectorGuardado._id });
     }
-
+    
     this.consultarSectores = function (res) {
         response = res;
         modeloSector.find(onEncontrarSectores);
     }
     
     function onEncontrarSectores(err, sectores) {
-        if (err) {
-            return res.send(err);
-        }        
+        if (err) return res.send(err);
         response.json(sectores);
     }
 }

@@ -6,6 +6,7 @@ var router = express.Router();
 var DBUbicacion = require('../datos/DBUbicacion');
 var dbUbicacion = new DBUbicacion();
 
+// lista de las ubicaciones Pais, Municipio, Departamento
 router
   .route('/Ubicaciones')
   .get(function (req, res) {

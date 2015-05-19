@@ -62,6 +62,7 @@
     <None Include="ijob-api-dev.pubxml" />
     <Content Include="config.json" />
     <Content Include="vistas\ImagenSubir.html" />
+    <Content Include="vistas\ImagenUsuario.html" />
     <Content Include="vistas\index.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config" />

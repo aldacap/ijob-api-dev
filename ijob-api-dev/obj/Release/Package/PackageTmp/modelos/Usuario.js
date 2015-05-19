@@ -1,8 +1,6 @@
-﻿/**
- *  Todas las personas que tengan acceso al aplicativo
- */
-
-var mongoose = require('../datos/cliente');
+﻿// Todas las personas que tengan acceso al aplicativo
+var mongoose = require('mongoose');
+var cliente = require('../datos/Cliente.js');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');
@@ -21,12 +19,13 @@ var usuarioSchema = new Schema({
     nombre: { type: String, required: true },
     apellidos: String,
     cedula: { type: Number, unique: true },
-    genero: { type: String, unique: true },
+    genero: { type: String, required: true },
     nacimiento: Date, 
     _ubicacion : { type: Schema.Types.ObjectId, ref: 'Ubicacion' },
     ocupaciones : [ocupacionSchema],
     direccion: { type: String },
-    foto: Buffer,
+    // id de la imagen guardada en la bd de imagenes
+    _imagen : { type: Schema.Types.ObjectId }, 
     creado: Date,
     modificado: Date,
     activo: { type: Boolean, required: true },
@@ -39,4 +38,4 @@ var usuarioSchema = new Schema({
 // adiciona las validaciones de campos únicos
 usuarioSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
+module.exports = cliente.model('Usuario', usuarioSchema);

@@ -9,12 +9,13 @@ var Mailer = function () {
         }
     });
     
-    this.enviarCorreo = function (to, asunto, mensaje) {
+    this.enviarCorreo = function (to, asunto, mensajePlano,mensajeHTML ) {
         transporter.sendMail({
-            from: 'ijob.com.co@gmail.com',
+            from: 'IJob <ijob.com.co@gmail.com>',
             to: to,
             subject: asunto,
-            text: mensaje
+            text: mensajePlano,
+            html: mensajeHTML
         });
     }
 }

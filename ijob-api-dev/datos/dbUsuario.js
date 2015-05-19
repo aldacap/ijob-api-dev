@@ -10,28 +10,34 @@ function DBUsuario() {
     var uuid = require('uuid');
     // referencia privada a la respuesta HTTP
     var response;
+    
+    var DBImagen = require('../datos/DBImagen');
+    var dbImagen = new DBImagen();
+    
     //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
     this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
-        response = res;        
+        response = res;
         modeloUsuario.findOne({ correo: parametroCorreo , clave: parametroClave }, 'nombre apellidos token', onUsuarioEncontrado);
     }
     
     // retorna el usuario encontrado en formato json
     function onUsuarioEncontrado(err, usuarioEncontrado) {
-        if (err) { return response.send(err); }
+        if (err) return response.send(err);
         response.json(usuarioEncontrado);
     }
     
+    var callbackDone;
     //  Valida el token de un usuario
     this.validarUsuario = function (parametroToken, done) {
-        modeloUsuario.findOne({ token: parametroToken }, onUsuarioValidado);
+        callbackDone = done;
+        modeloUsuario.findOne({ token: parametroToken }, 'nombre apellidos correo', onUsuarioValidado);
     }
     
     // retorna la respuesta
     function onUsuarioValidado(err, usuarioEncontrado) {
-        if (err) { return done(err); }
-        if (!usuarioEncontrado) { return done(null, false); }
-        return done(null, usuarioEncontrado, { scope: 'all' });
+        if (err) return callbackDone(err);
+        if (!usuarioEncontrado) { return callbackDone(null, false); }
+        return callbackDone(null, usuarioEncontrado, { scope: 'all' });
     }
     
     // Adiciona un nuevo usuario al sistema
@@ -47,9 +53,7 @@ function DBUsuario() {
     
     // resultado de guardar un usuario
     function onUsuarioGuardado(err, usuarioGuardado) {
-        if (err) {
-            return response.send(err);
-        }
+        if (err) return response.send(err);
         response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id });
     }
     
@@ -66,10 +70,7 @@ function DBUsuario() {
     }
     
     function onUsuarioEncontradoPorID(err, usuarioEncontrado) {
-        if (err) {
-            return response.send(err);
-        }
-        
+        if (err) return response.send(err);
         // instancia la nueva ocupación
         var nuevaOcupacion = usuarioEncontrado.ocupaciones.create(ocupacion);
         
@@ -86,30 +87,13 @@ function DBUsuario() {
             usuarioEncontrado.ocupaciones.push(nuevaOcupacion);
         }
         
-        //// inicializa un item del array de ocupaciones
-        //if (usuarioEncontrado.ocupaciones.length < indiceOcupacion + 1) {
-        //    usuarioEncontrado.ocupaciones.push(nuevaOcupacion);
-        //} else {
-        //    // usuarioEncontrado.ocupaciones[indiceOcupacion].remove();            
-        //    usuarioEncontrado.ocupaciones[indiceOcupacion] = nuevaOcupacion;
-        //}
-        
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioActualizado) {
             if (err) return response.send(err);
             response.json(usuarioActualizado);
         });
-
-        //for (prop in ocupacionPrincipal) {
-        //    // if (usuario.[prop])
-        //    // usuario.[prop] = req.body[prop];
-        //    usuarioEncontrado.ocupaciones[0][prop] = ocupacionPrincipal[prop];
-        //}
     }
     
-    //function handleError(err, data) {
-    //    console.log(err);
-    //}
-    
+    // envia un correo con la clave a un usuario registrado
     this.recordarClave = function (parametroCorreo, res) {
         response = res;
         modeloUsuario.findOne({ correo: parametroCorreo }, 'correo clave', onUsuarioRecordarEncontrado);
@@ -117,10 +101,37 @@ function DBUsuario() {
     
     // retorna el usuario encontrado en formato json
     function onUsuarioRecordarEncontrado(err, usuarioEncontrado) {
-        if (err) { return response.send(err); }
-        mailer.enviarCorreo(usuarioEncontrado.correo, 'Clave IJob', usuarioEncontrado.clave);
-        
+        if (err) return response.send(err);
+        var mensajeRecordarClave = 'Te estamos enviando este correo en respuesta a tu solicitud:<br/>Tu clave es: <strong>{0}</strong>';
+        mailer.enviarCorreo(usuarioEncontrado.correo, 'Clave IJob', usuarioEncontrado.clave, mensajeRecordarClave.replace('{0}', usuarioEncontrado.clave));
         response.json({ 'Mensaje': 'Clave enviada' });
+    }
+    
+    var nombreArchivoImagen;
+    // actualiza la foto de perfil de un usuario
+    this.actualizarImagen = function (_idUsuario, nombreArchivo, res) {
+        response = res;
+        nombreArchivoImagen = nombreArchivo;
+        modeloUsuario.findById(_idUsuario, 'correo _imagen', onUsuarioImagenEncontrado);
+    }
+    
+    function onUsuarioImagenEncontrado(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        // sube la imagen a la bd de imagenes y actualiza el usuario
+        dbImagen.subirImagenUsuario(usuarioEncontrado, nombreArchivoImagen, response);
+    }
+    
+    // actualiza la foto de perfil de un usuario
+    this.consultarImagen = function (_idUsuario, res) {
+        response = res;
+        modeloUsuario.findById(_idUsuario, 'correo _imagen', onConsultarImagenEncontrado);
+    }
+    
+    function onConsultarImagenEncontrado(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        dbImagen.consultarImagen(usuarioEncontrado._imagen, response);
     }
 }
 

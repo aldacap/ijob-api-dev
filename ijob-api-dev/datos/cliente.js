@@ -9,8 +9,8 @@ conexionCliente.on('connected', function onClienteConnected() {
     console.log('Mongoose connected to devDatConnStr');
 });
 
-conexionCliente.on('error', function onClienteError() {
-    console.log('Error on devDatConnStr');
+conexionCliente.on('error', function onClienteError(err) {
+    console.log('Error on devDatConnStr' + err);
 });
 
 conexionCliente.on('disconnected', function onClienteDesconectado() {

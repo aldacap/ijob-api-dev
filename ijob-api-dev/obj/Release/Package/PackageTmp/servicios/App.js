@@ -20,12 +20,10 @@ app.use(parser.json());
 // acepta parametros por url encoded
 app.use(parser.urlencoded());
 
-// middleware que procesa los archivos que se suben
+// middleware que procesa los archivos que se suben, se utiliza principalmente para las imagenes de perfil de los usuarios
 app.use(multer({
     dest: './uploads/',
-    onFileUploadComplete: function onImagenCargada(file) {
-        done = true;
-    }
+    onFileUploadComplete: function onImagenCargada(file) { done = true; }
 }));
 
 // rutas para las imagenes de los usuarios
@@ -40,7 +38,11 @@ app.use('/api', srvUsuarios);
 var srvSectores = require('./SrvSectores');
 app.use('/api', srvSectores);
 
-// rutas para las calificaciones
+// rutas para los ubicaciones
+var srvUbicaciones = require('./SrvUbicaciones');
+app.use('/api', srvUbicaciones);
+
+// rutas para los Calificaciones
 var srvCalificaciones = require('./SrvCalificaciones');
 app.use('/api', srvCalificaciones);
 
