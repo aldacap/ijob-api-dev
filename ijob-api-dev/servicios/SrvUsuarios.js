@@ -1,16 +1,13 @@
-﻿/**
- *  api para los usuarios
- */
-
+﻿// api para los usuarios
 var express = require('express');
 var router = express.Router();
+
+var seguridad = require('./seguridad');
 
 var DBUsuario = require('../datos/dbUsuario');
 var dbUsuario = new DBUsuario();
 
-/**
- *  autentica un usuario mediante correo y clave
- */
+// autentica un usuario mediante correo y clave
 router
   .route('/autenticar/:correo/:clave')
   .get(function (req, res) {
@@ -34,15 +31,41 @@ router
 // actualizar ocupacion principal
 router
   .route('/usuarios/principal/:id')
-  .put(function (req, res) {
+  .put(seguridad.authenticate('bearer', { session: false }),function (req, res) {
     dbUsuario.actualizarOcupacion(true, req.params.id , req.body, res);
 });
 
 // actualizar ocupacion principal
 router
   .route('/usuarios/secundaria/:id')
-  .put(function (req, res) {
+  .put(seguridad.authenticate('bearer', { session: false }),function (req, res) {
     dbUsuario.actualizarOcupacion(false, req.params.id , req.body, res);
+});
+
+// formulario para cargar una imagen, solo para desarrollo
+router
+  .route('/usuarios/imagen')
+  .get(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+    res.sendfile("./vistas/ImagenUsuario.html");
+});
+
+// actualizar la foto de perfil
+router
+  .route('/usuarios/imagen/:id')
+  .post(seguridad.authenticate('bearer', { session: false }),function (req, res) {
+    // Valida que se haya subido la imagen
+    if (typeof (done) === 'udefined')
+        res.end({ 'Error': 'Problemas al subir el archivo, verifique que el archivo este correcto' });
+    if (done == true) {
+        dbUsuario.actualizarImagen(req.params.id, req.files.imagenUsuario.name, res);
+    }
+});
+
+// consulta la imagen del perfil
+router
+  .route('/usuarios/imagen/:id')
+  .get(function (req, res) {
+    dbUsuario.consultarImagen(req.params.id, res);
 });
 
 module.exports = router;

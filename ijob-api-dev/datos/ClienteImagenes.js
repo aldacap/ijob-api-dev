@@ -9,8 +9,8 @@ conexionCliente.on('connected', function onClienteConnected() {
     console.log('Mongoose connected to devImgConnStr');
 });
 
-conexionCliente.on('error', function onClienteError() {
-    console.log('Error on devImgConnStr');
+conexionCliente.on('error', function onClienteError(err) {
+    console.log('Error on devImgConnStr' + err);
 });
 
 conexionCliente.on('disconnected', function onClienteDesconectado() {

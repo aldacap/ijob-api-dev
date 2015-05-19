@@ -19,7 +19,7 @@ function DBImagen() {
         response = res;
         gfs = Grid(cliente.db);
         // streaming to gridfs
-        //filename to store in mongodb
+        // filename to store in mongodb
         var writestream = gfs.createWriteStream({
             filename: nombreArchivo
         });
@@ -37,6 +37,7 @@ function DBImagen() {
         });
     }
     
+    // obtiene el archivo de una imagen por su ID
     this.consultarImagen = function (idArchivo, res) {
         response = res;
         
@@ -54,6 +55,35 @@ function DBImagen() {
             _id: imagenEncontrada._id
         });
         readstream.pipe(response);
+    }
+    
+    // Objeto Mongoose del usuario al que se le actualiza la imagen
+    var usuarioImagen;
+    // Carga un archivo desde la carpeta uploads
+    this.subirImagenUsuario = function (usuario, nombreArchivo, res) {
+        response = res;
+        // idUsuario = _idUsuario;        
+        usuarioImagen = usuario;
+        gfs = Grid(cliente.db);
+        // streaming to gridfs, filename to store in mongodb
+        var writestream = gfs.createWriteStream({ filename: nombreArchivo });
+        fs.createReadStream('./uploads/' + nombreArchivo).pipe(writestream);
+        // cuando termina de subir el archivo, lo borra y retorna el id
+        writestream.on('close', onEndSubirImagenUsuario);
+    }
+    
+    // termino de subir el archivo a la bd
+    function onEndSubirImagenUsuario(file) {
+        // elimina el archivo que ya se subio
+        fs.unlink('./uploads/' + file.filename, function (err) {
+            if (err) response.send(err);
+            // actualiza el usuario que se paso por referencia
+            usuarioImagen._imagen = file._id;
+            usuarioImagen.save(function onUsuarioActualizado(err, usuarioActualizado) {
+                if (err) return response.send(err);
+                response.json(usuarioActualizado);
+            });
+        });
     }
 }
 

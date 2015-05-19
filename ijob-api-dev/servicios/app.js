@@ -20,12 +20,10 @@ app.use(parser.json());
 // acepta parametros por url encoded
 app.use(parser.urlencoded());
 
-// middleware que procesa los archivos que se suben
+// middleware que procesa los archivos que se suben, se utiliza principalmente para las imagenes de perfil de los usuarios
 app.use(multer({
     dest: './uploads/',
-    onFileUploadComplete: function onImagenCargada(file) {
-        done = true;
-    }
+    onFileUploadComplete: function onImagenCargada(file) { done = true; }
 }));
 
 // rutas para las imagenes de los usuarios

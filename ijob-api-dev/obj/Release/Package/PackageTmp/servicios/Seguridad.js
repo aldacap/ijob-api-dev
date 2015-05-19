@@ -1,6 +1,4 @@
-﻿/**
- *  modulo de autenticación
- */
+﻿// modulo de autenticación
 
 var passport = require('passport');
 // estrategia autenticacion http-bearer
@@ -15,6 +13,5 @@ passport
 function onValidarUsuarioDB(token, done) {
     dbUsuario.validarUsuario(token, done);
 }
-
 
 module.exports = passport;
