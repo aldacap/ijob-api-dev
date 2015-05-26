@@ -3,6 +3,8 @@
 var express = require('express');
 var router = express.Router();
 
+var seguridad = require('./seguridad');
+
 var DBUbicacion = require('../datos/DBUbicacion');
 var dbUbicacion = new DBUbicacion();
 
@@ -16,7 +18,7 @@ router
 // registra la información básica de una Ubicacion
 router
   .route('/Ubicaciones')
-  .post(function (req, res) {
+  .post(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     dbUbicacion.crearUbicacion(req, res);
 });
 

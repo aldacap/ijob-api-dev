@@ -48,6 +48,8 @@ function DBUsuario() {
         // asigna un token de seguridad para la autenticación
         nuevoUsuario.token = uuid.v1();
         nuevoUsuario.admin = false;
+        nuevoUsuario.activo = true;
+        nuevoUsuario.creado = Date.now();
         nuevoUsuario.save(onUsuarioGuardado);
     }
     
