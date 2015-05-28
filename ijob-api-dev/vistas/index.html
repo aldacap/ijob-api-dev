@@ -154,8 +154,12 @@
                     <em>método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tiopo2 = recibidas</em>
                 </li>
                 <li>
-                    post:<a href='#'>/calificaciones/{calidad}{respeto}{puntualidad}{observaciones}{idUsuarioOtorga}{idUsuarioRecibe}</a><br />
-                    <em>método para realizar una calificación, los parametros de calidad, respeto y puntualidad son numericos de 1 a 5, se debe enviar el id del usuario que califica (idUsuarioOtorga) como el que es calificado (idUsuarioRecibe)</em>
+                    get:<a href='#'>/calificaciones/:usuario</a><br />
+                    <em>método para optener calificaciones pendientes, trae el valor 'tipoCalificacion' si es 1 son calificaciones del usuario 'Usuario del Servicio' y si es 2 corresponde a la calificacion del usuario 'Prestador del Servicio'</em>
+                </li>
+                <li>
+                    put:<a href='#'>/calificaciones/{id}{calidad}{respeto}{puntualidad}{orientacion}{observaciones}</a><br />
+                    <em>método para realizar una calificación, los criterios son calidad, respeto, puntualidad y orientacion, se toman 3 dependiendo del tipo de calificacion y el otro criterio debe ir con valor cero (0), se envía el id de la calificacion</em>
                 </li>
             </ul>
             <blockquote>

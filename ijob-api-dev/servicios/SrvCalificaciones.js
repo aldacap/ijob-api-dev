@@ -9,11 +9,11 @@ var DBCalificacion = require('../datos/dbCalificacion');
 var dbCalificacion = new DBCalificacion();
 
 /**
- *  agrega la información de una nueva calificacion
+ *  agrega la información de una calificacion pendiente
  */
 router
   .route('/calificaciones/')
-  .post(function (req, res) {
+  .put(function (req, res) {
     dbCalificacion.agregarCalificacion(req, res);
 });
   
@@ -24,6 +24,15 @@ router
   .route('/calificaciones/:usuario/:cantidad/:tipo')
   .get(function (req, res) {
     dbCalificacion.consultarCalificacion(req.params.usuario, req.params.cantidad, req.params.tipo, res);
+});
+
+/**
+ *  consulta la información de calificaciones pendientes
+ */
+router
+  .route('/calificaciones/pendientes/:usuario')
+  .get(function (req, res) {
+    dbCalificacion.buscarCalificacion(req.params.usuario, res);
 });
 
 module.exports = router;

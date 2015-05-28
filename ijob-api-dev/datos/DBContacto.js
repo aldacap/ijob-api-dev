@@ -4,6 +4,8 @@
 
 function DBContacto() {
     var modeloContacto = require('../modelos/Contacto');
+    var DBCalificacion = require('./DBCalificacion.js');
+    var dbCalificacion = new DBCalificacion();
     // referencia privada a la respuesta HTTP
     var response;
     
@@ -11,6 +13,8 @@ function DBContacto() {
     this.solicitarContacto = function (reqContacto, res) {
         // instancia un contacto con los datos que vienen en el request
         response = res;
+        var vFecha = new Date();
+        reqContacto.body.fecha = vFecha;
         var nuevoContacto = new modeloContacto(reqContacto.body);
         nuevoContacto.save(onContactoGuardado);
     }
@@ -28,6 +32,7 @@ function DBContacto() {
     this.actualizarContacto = function (pIdContacto, pEstado, res) {
         response = res;
         vEstado = pEstado;
+        
         // instancia una solicitud de contacto con los datos que vienen en el request
         modeloContacto.findOne({ _id: pIdContacto }, onContactoEncontrado);
     }
@@ -38,11 +43,18 @@ function DBContacto() {
             return response.send(err);
         }
         
+        // Si se acepta la solicitud de contacto se crean calificaciones pendientes
+        if (vEstado == 1) {
+            // Se crea calificación
+            dbCalificacion.crearCalificacion(contactoEncontrado, 1);
+            dbCalificacion.crearCalificacion(contactoEncontrado, 2);
+        }
+
         contactoEncontrado.estado = vEstado;
         
         contactoEncontrado.save(function onContactoActualizado(err, contactoActualizado) {
             if (err) return response.send(err);
-            response.json(contactoActualizado);
+            response.send({ message: 'OK, contacto actualizado', _id: contactoActualizado._id });
         });
     }
     

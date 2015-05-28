@@ -10,13 +10,16 @@ var Schema = mongoose.Schema;
 
 var calificacionSchema = new Schema({
     fecha: { type: Date, default: Date.now },
-    puntuacion: { type: Number, required: true},
-    calidad: { type: Number, required: true },
-    respeto: { type: Number, required: true },
-    puntualidad: { type: Number, required: true },
+    tipoCalificacion: { type: Number, required: true },
+    puntuacion: { type: Number },
+    calidad: { type: Number },
+    respeto: { type: Number },
+    puntualidad: { type: Number },
+    orientacion: { type: Number },
     observaciones: { type: String },
     _usuarioOtorga : { type: Schema.Types.ObjectId, ref: 'Usuario' },
-    _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' }
+    _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    estadoCalificacion: { type: Number, required: true }
 });
 
 
