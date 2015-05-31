@@ -5,6 +5,7 @@
 function DBCalificacion() {
     var modeloCalificacion = require('../modelos/Calificacion');
     var modeloContacto = require('../modelos/Contacto');
+    var modeloUsuario = require('../modelos/Usuario');
     // referencia privada a la respuesta HTTP
     var response;
         
@@ -30,26 +31,27 @@ function DBCalificacion() {
     // Adiciona una nueva calificacion
     this.agregarCalificacion = function (reqCalificacion, res) {
         response = res;
-        var c = parseInt(reqCalificacion.body.calidad, 10);
-        var r = parseInt(reqCalificacion.body.respeto, 10);
-        var p = parseInt(reqCalificacion.body.puntualidad, 10);
-        var o = parseInt(reqCalificacion.body.orientacion, 10);
-        var result = Math.round((c + r + p + o) * 10 / 3) / 10;
+        var vCalidad = parseInt(reqCalificacion.body.calidad, 10);
+        var vRespeto = parseInt(reqCalificacion.body.respeto, 10);
+        var vPuntualidad = parseInt(reqCalificacion.body.puntualidad, 10);
+        var vOrientacion = parseInt(reqCalificacion.body.orientacion, 10);
+        var resultado = Math.round((vCalidad + vRespeto + vPuntualidad + vOrientacion) * 10 / 3) / 10;
         
         modeloCalificacion.findOne({ _id: reqCalificacion.body.idCalificacion }, function (err, calificacion) {
             if (err) {
                 return response.send(err);
             }
-            calificacion.puntuacion = result;
+            calificacion.puntuacion = resultado;
             var vFecha = new Date();
             calificacion.fecha = vFecha;
             
-            calificacion.calidad = c;
-            calificacion.respeto = r;
-            calificacion.puntualidad = p;
-            calificacion.orientacion = o;
+            calificacion.calidad = vCalidad;
+            calificacion.respeto = vRespeto;
+            calificacion.puntualidad = vPuntualidad;
+            calificacion.orientacion = vOrientacion;
             calificacion.estadoCalificacion = 1;
-            calificacion.observaciones = reqCalificacion.body.observaciones;            
+            calificacion.observaciones = reqCalificacion.body.observaciones;
+            
             // se actualiza la calificacion pendiente
             calificacion.save(onCalificacionActualizada);
         });
@@ -58,6 +60,12 @@ function DBCalificacion() {
     // Resultado de actualizar una calificacion pendiente
     function onCalificacionActualizada(err, calificacionActualizada) {
         if (err) return response.send(err);
+        
+        // actualiza la calificacion del usuario        
+        var vCalAnt = modeloUsuario.findById(calificacionActualizada._usuarioRecibe);
+        // FALTA ACTUALIZAR LA CALIFICACION 
+       // console.log(vCalAnt);        
+
         // instancia una solicitud de contacto para actualizar el estado
         modeloContacto.findOne({ _id: calificacionActualizada._idContacto }, function onContactoEncontrado(err, contactoEncontrado) {
             if (err) {

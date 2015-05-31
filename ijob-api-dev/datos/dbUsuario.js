@@ -17,7 +17,8 @@ function DBUsuario() {
     //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
     this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
         response = res;
-        modeloUsuario.findOne({ correo: parametroCorreo , clave: parametroClave }, 'nombre apellidos token', onUsuarioEncontrado);
+        modeloUsuario.findOne({ correo: parametroCorreo, clave: parametroClave },
+            '_id correo token nombre apellidos cedula genero nacimiento ocupaciones calificacion admin', onUsuarioEncontrado);
     }
     
     // retorna el usuario encontrado en formato json

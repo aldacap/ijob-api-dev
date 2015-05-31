@@ -74,7 +74,7 @@
             <ul>
                 <li>
                     get:<a href='#'>/autenticar/:correo/:clave</a>
-                    <br /><em>autentica un usuario mediante correo y clave</em>
+                    <br /><em>autentica un usuario mediante correo y clave, devuelve la información del perfil</em>
                 </li>
                 <li>
                     get:<a href='#'>/usuarios/recordar/:correo</a><br />
@@ -183,6 +183,16 @@
                     put:<a href='#'>/contactos/{idContacto}{estado}</a><br />
                     <em>método para responder a una solicitud de contacto, la solicitud pendiente está en estado=0, si se acepta la solicitud sería estado=1 y si rechaza la solicitud será estado=2, se debe enviar el id de la solicitud de contacto un prestador de servicios puede tener varias solicitudes.</em>
                 </li>
+            </ul>
+
+            <blockquote>
+                <p>Búsqueda</p>
+            </blockquote>
+            <ul>
+                <li>
+                    get:<a href='#'>/busqueda/:ocupacion</a><br />
+                    <em>método para buscar perfiles de acuerdo a una ocupación, trae los perfiles que contengan la cadena de ocupacion.</em>
+                </li>             
             </ul>
             <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
         </fieldset>

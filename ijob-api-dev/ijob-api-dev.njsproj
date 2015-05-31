@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="datos\ClienteImagenes.js" />
     <Compile Include="datos\Cliente.js" />
+    <Compile Include="datos\DBBusqueda.js" />
     <Compile Include="datos\DBCalificacion.js" />
     <Compile Include="datos\DBContacto.js" />
     <Compile Include="datos\DBImagen.js" />
@@ -48,6 +49,7 @@
     <Compile Include="server.js" />
     <Compile Include="servicios\App.js" />
     <Compile Include="servicios\Seguridad.js" />
+    <Compile Include="servicios\SrvBusquedas.js" />
     <Compile Include="servicios\SrvCalificaciones.js" />
     <Compile Include="servicios\SrvContactos.js" />
     <Compile Include="servicios\SrvSectores.js" />

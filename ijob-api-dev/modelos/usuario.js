@@ -24,6 +24,7 @@ var usuarioSchema = new Schema({
     _ubicacion : { type: Schema.Types.ObjectId, ref: 'Ubicacion' },
     ocupaciones : [ocupacionSchema],
     direccion: { type: String },
+    calificacion: { type: Number },
     // id de la imagen guardada en la bd de imagenes
     _imagen : { type: Schema.Types.ObjectId }, 
     creado: Date,
