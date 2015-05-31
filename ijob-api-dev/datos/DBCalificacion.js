@@ -4,6 +4,7 @@
 
 function DBCalificacion() {
     var modeloCalificacion = require('../modelos/Calificacion');
+    var modeloContacto = require('../modelos/Contacto');
     // referencia privada a la respuesta HTTP
     var response;
         
@@ -22,6 +23,7 @@ function DBCalificacion() {
         nuevaCalificacion.fecha = new Date();
         nuevaCalificacion.tipoCalificacion = tipo;
         nuevaCalificacion.estadoCalificacion = 0;
+        nuevaCalificacion._idContacto = req._id;
         nuevaCalificacion.save();
     }
     
@@ -34,12 +36,10 @@ function DBCalificacion() {
         var o = parseInt(reqCalificacion.body.orientacion, 10);
         var result = Math.round((c + r + p + o) * 10 / 3) / 10;
         
-        modeloCalificacion.findOne({ _id: reqCalificacion.body.id }, function (err, calificacion) { 
+        modeloCalificacion.findOne({ _id: reqCalificacion.body.idCalificacion }, function (err, calificacion) {
             if (err) {
                 return response.send(err);
             }
-            console.log(result);
-            console.log(calificacion);
             calificacion.puntuacion = result;
             var vFecha = new Date();
             calificacion.fecha = vFecha;
@@ -49,13 +49,36 @@ function DBCalificacion() {
             calificacion.puntualidad = p;
             calificacion.orientacion = o;
             calificacion.estadoCalificacion = 1;
+            calificacion.observaciones = reqCalificacion.body.observaciones;            
             // se actualiza la calificacion pendiente
-            calificacion.save(function onCalificacionActualizada(err, calificacionActualizada) {
+            calificacion.save(onCalificacionActualizada);
+        });
+    }
+    
+    // Resultado de actualizar una calificacion pendiente
+    function onCalificacionActualizada(err, calificacionActualizada) {
+        if (err) return response.send(err);
+        // instancia una solicitud de contacto para actualizar el estado
+        modeloContacto.findOne({ _id: calificacionActualizada._idContacto }, function onContactoEncontrado(err, contactoEncontrado) {
+            if (err) {
+                return response.send(err);
+            }
+            var estado = contactoEncontrado.estado;
+            if (estado == 1) {
+                contactoEncontrado.estado = 3;
+            }
+            else {
+                contactoEncontrado.estado = 4;
+            }
+            
+            contactoEncontrado.save(function onContactoActualizado(err, contactoActualizado) {
                 if (err) return response.send(err);
                 response.send({ message: 'OK, calificacion actualizada', _id: calificacionActualizada._id });
             });
         });
     }
+    
+    // resultado de actualizar el estado de una solicitud de contacto
     
     // Obtiene calificaciones otorgadas o recibidas
     this.consultarCalificacion = function (pUsuario, pCantidad, pTipo, res) {

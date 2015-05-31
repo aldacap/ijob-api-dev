@@ -158,18 +158,22 @@
                     <em>método para optener calificaciones pendientes, trae el valor 'tipoCalificacion' si es 1 son calificaciones del usuario 'Usuario del Servicio' y si es 2 corresponde a la calificacion del usuario 'Prestador del Servicio'</em>
                 </li>
                 <li>
-                    put:<a href='#'>/calificaciones/{id}{calidad}{respeto}{puntualidad}{orientacion}{observaciones}</a><br />
+                    put:<a href='#'>/calificaciones/{idCalificacion}{calidad}{respeto}{puntualidad}{orientacion}{observaciones}</a><br />
                     <em>método para realizar una calificación, los criterios son calidad, respeto, puntualidad y orientacion, se toman 3 dependiendo del tipo de calificacion y el otro criterio debe ir con valor cero (0), se envía el id de la calificacion</em>
                 </li>
             </ul>
             <blockquote>
-                <p>Contactos (estado: 0 = solicitud sin contestar, 1 = solicitud aceptada y 2 = solicitud rechazada)</p>
+                <p>Contactos</p>
             </blockquote>
             <ul>
 
                 <li>
-                    get:<a href='#'>/contactos/{idUsuario}</a><br />
-                    <em>método para obtener las solicitudes de contacto pendientes o sin responder</em>
+                    get:<a href='#'>/contactos/pendientes/:idUsuario/:tipo</a><br />
+                    <em>método para obtener las solicitudes de contacto pendientes o sin responder; tipo: 1=enviadas, 2=recibidas</em>
+                </li>
+                <li>
+                    get:<a href='#'>/contactos/activos/:idUsuario</a><br />
+                    <em>método para obtener las solicitudes de contacto activas (sin calificación)</em>
                 </li>
                 <li>
                     post:<a href='#'>/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</a><br />

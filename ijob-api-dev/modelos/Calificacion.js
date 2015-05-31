@@ -19,6 +19,7 @@ var calificacionSchema = new Schema({
     observaciones: { type: String },
     _usuarioOtorga : { type: Schema.Types.ObjectId, ref: 'Usuario' },
     _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    _idContacto : { type: Schema.Types.ObjectId, ref: 'Contacto' },
     estadoCalificacion: { type: Number, required: true }
 });
 

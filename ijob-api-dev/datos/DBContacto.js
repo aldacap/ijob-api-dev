@@ -59,10 +59,28 @@ function DBContacto() {
     }
     
     // Obtener solicitudes de contacto pendientes
-    this.consultarSolicitudes = function (pUsuario, res) {
+    this.consultarSolicitudes = function (pUsuario, pTipo, res) {
+        response = res;
+        if (pTipo == 1) {
+            modeloContacto
+            .find({ _usuarioSolicita: pUsuario, estado: 0 })
+            .exec(onEncontrarSolicitudes);
+        }
+        else {
+            modeloContacto
+            .find({ _usuarioRecibe: pUsuario, estado: 0 })
+            .exec(onEncontrarSolicitudes);
+        }
+    }
+    
+    // Obtener solicitudes de contacto activas
+    this.buscarSolicitudes = function (pUsuario, res) {
         response = res;
         modeloContacto
-            .find({ _usuarioRecibe: pUsuario, estado: 0 })
+            .find({ 'estado': { $in: [1, 3] } })
+            .and([
+                { $or: [{ '_usuarioSolicita': pUsuario }, { '_usuarioRecibe': pUsuario }] }
+            ])
             .exec(onEncontrarSolicitudes);
     }
     
@@ -73,7 +91,6 @@ function DBContacto() {
         }
         response.json(solicitudes);
     }
-
 }
 
 module.exports = DBContacto;

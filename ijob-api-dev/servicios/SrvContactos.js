@@ -27,12 +27,21 @@ router
 });
 
 /**
- *  obtiene solicitudes de contacto pendientes
+ *  obtiene solicitudes de contacto pendientes {tipo 1:enviadas 2:recibidas}
  */
 router
-  .route('/contactos/:idUsuario')
+  .route('/contactos/pendientes/:idUsuario/:tipo')
   .get(function (req, res) {
-    dbContacto.consultarSolicitudes(req.params.idUsuario, res);
+    dbContacto.consultarSolicitudes(req.params.idUsuario, req.params.tipo, res);
+});
+
+/**
+ *  obtiene solicitudes de contacto activas (sin calificacion)
+ */
+router
+  .route('/contactos/activos/:idUsuario')
+  .get(function (req, res) {
+    dbContacto.buscarSolicitudes(req.params.idUsuario, res);
 });
 
 module.exports = router;
