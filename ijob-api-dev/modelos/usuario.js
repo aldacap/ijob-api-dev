@@ -1,6 +1,7 @@
 ﻿// Todas las personas que tengan acceso al aplicativo
 var mongoose = require('mongoose');
 var cliente = require('../datos/Cliente.js');
+var modeloUbicacion = require('../modelos/Ubicacion');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');

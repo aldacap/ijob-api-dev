@@ -190,9 +190,13 @@
             </blockquote>
             <ul>
                 <li>
-                    get:<a href='#'>/busqueda/:ocupacion</a><br />
-                    <em>método para buscar perfiles de acuerdo a una ocupación, trae los perfiles que contengan la cadena de ocupacion.</em>
-                </li>             
+                    get:<a href='#'>/busqueda/:ocupacion/:cantidad</a><br />
+                    <em>método para buscar perfiles de acuerdo a una ocupación, trae los perfiles que contengan la cadena de ocupacion. El parámetro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
+                </li>   
+                <li>
+                    get:<a href='#'>/busqueda/avanzada/:ocupacion/:categoria/:ciudad/:calificacion/:cantidad</a><br />
+                    <em>método para buscar perfiles de acuerdo a la ocupacion, categoría, calificación y/o ciudad, trae los perfiles que cumplan con los criterios seleccionados. El parametro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
+                </li>                      
             </ul>
             <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
         </fieldset>

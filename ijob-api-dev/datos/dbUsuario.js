@@ -4,21 +4,25 @@
 
 function DBUsuario() {
     var modeloUsuario = require('../modelos/Usuario');
+    var mongoose = require('mongoose');
     var smptMailer = require('./SMTPMailer.js');
     var mailer = new smptMailer();
     // modulo para generar los tokens
     var uuid = require('uuid');
     // referencia privada a la respuesta HTTP
     var response;
-    
     var DBImagen = require('../datos/DBImagen');
     var dbImagen = new DBImagen();
     
     //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
     this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
         response = res;
-        modeloUsuario.findOne({ correo: parametroCorreo, clave: parametroClave },
-            '_id correo token nombre apellidos cedula genero nacimiento ocupaciones calificacion admin', onUsuarioEncontrado);
+        var Ubicacion = mongoose.model('Ubicacion');
+        modeloUsuario
+        .findOne({ correo: parametroCorreo, clave: parametroClave })
+        .populate('_ubicacion', 'pais departamento municipio')
+        .select('_id correo token nombre apellidos cedula genero nacimiento ocupaciones calificacion admin _ubicacion')
+        .exec(onUsuarioEncontrado);
     }
     
     // retorna el usuario encontrado en formato json
