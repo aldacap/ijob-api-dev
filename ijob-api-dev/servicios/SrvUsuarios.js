@@ -14,6 +14,13 @@ router
     dbUsuario.autenticarUsuario(req.params.correo, req.params.clave, res);
 });
 
+// consulta un usuario por su ID
+router
+  .route('/usuarios/:id')
+  .get(function (req, res) {
+    dbUsuario.consultarUsuario(req.params.id , res);
+});
+
 // envia un correo con la contraseña
 router
   .route('/usuarios/recordar/:correo')
@@ -51,15 +58,15 @@ router
 
 // formulario para cargar una imagen, solo para desarrollo
 router
-  .route('/usuarios/imagen')
-  .get(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+  .route('/usuarios/imagen/subir')
+  .get(function (req, res) {
     res.sendfile("./vistas/ImagenUsuario.html");
 });
 
 // actualizar la foto de perfil
 router
   .route('/usuarios/imagen/:id')
-  .post(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+  .post(function (req, res) {
     // Valida que se haya subido la imagen
     if (typeof (done) === 'udefined')
         res.end({ 'Error': 'Problemas al subir el archivo, verifique que el archivo este correcto' });

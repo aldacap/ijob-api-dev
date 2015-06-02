@@ -41,165 +41,165 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div style="padding:20px;margin:20px;font-family: Arial !important;">
-        <h2>K1 Rest API</h2>
-        <h3>Damian Del Castillo 2015</h3>
-        <h4>Los métodos privados <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> deben llevar un token válido en el parametro <em>access_token</em></h4>
-        <h4>Todos los servicios se encuentran dentro de la ruta <a href='#'>/api</a></h4>
+    <div class="container">
+        <div style="padding:20px;margin:20px;font-family: Arial !important;">
+            <h2>K1 Rest API</h2>
+            <h3>Damian Del Castillo 2015</h3>
+            <h4>Los métodos privados <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> deben llevar un token válido en el parametro <em>access_token</em></h4>
+            <h4>Todos los servicios se encuentran dentro de la ruta <a href='#'>/api</a></h4>
 
-        <p class="text-muted">
-            En los métodos get: los parámetros van por ruta, y están representados por dos puntos y el nombre del parámetro.
-            ejm: :id, :correo, :clave
-        </p><p class="text-muted">
-            En los métodos post, los parámetros van dentro de un formulario y están representados entre llaves
-            ejm: {nombre},{correo}{cedula}
-        </p><p class="text-danger">
-            los parámetros opcionales, se representan con el nombre y la palabra opc después de un pipe | .
-            ejm: {departamento|opc},{correo|opc}{clave|opc}
-        </p><p class="text-muted">
-            las referencias a otra fuente se escriben con una raya al piso.
-            ejm: {_id},{_imagen}
-        </p><p class="text-muted">
-            las referencias a una enumeración se escriben entre corchetes.
-            ejm: ['Uno','Dos']
-        </p>
-
-
-
-        <fieldset>
-            <legend>Métodos</legend>
-            <blockquote>
-                <p>Usuarios</p>
-            </blockquote>
-            <ul>
-                <li>
-                    get:<a href='#'>/autenticar/:correo/:clave</a>
-                    <br /><em>autentica un usuario mediante correo y clave, devuelve la información del perfil</em>
-                </li>
-                <li>
-                    get:<a href='#'>/usuarios/recordar/:correo</a><br />
-                    <em>envia un correo con la contraseña</em>
-                </li>
-                <li>
-                    post:<a href='#'>/usuarios/registrar/{nombre}{apellidos|opc}{correo}{cedula|opc}{direccion}{clave}{nacimiento}{genero['Masculino','Femenino']}</a><br />
-                    <em>registra la información básica de un usuario</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    put:<a href='#'>/usuarios/:id{nombre}{apellidos|opc}{correo}{cedula|opc}{direccion}{clave}{nacimiento}{genero['Masculino','Femenino']}{_ubicacion}{activo[true,false]}</a><br />
-                    <em>actualizar parcialmente la información de un usuario</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    put:<a href='#'>/usuarios/principal/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
-                    <em>actualizar la actividad primaria de un usuario</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    put:<a href='#'>/usuarios/secundaria/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
-                    <em>actualizar la actividad secundaria de un usuario</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    get:<a href='#'>/usuarios/imagen</a><br />
-                    <em>formulario para cargar una imagen, solo para desarrollo</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    post:<a href='#'>/usuarios/imagen/:id{imagenUsuario}</a><br />
-                    <em>actualizar la foto de perfil</em>
-                </li>
-                <li>
-                    get:<a href='#'>/usuarios/imagen/:id</a><br />
-                    <em>consulta la imagen del perfil <a href="http://ijob-api-dev.azurewebsites.net/api/usuarios/imagen/555adb3a4c5a74cc08000002?access_token=28574b40-fdf2-11e4-9195-3b56d5dce309">Ejemp</a></em>
-                </li>
-            </ul>
-            <blockquote>
-                <p>Sectores</p>
-            </blockquote>
-            <ul>
-
-                <li>
-                    get:<a href='#'>/sectores/</a><br />
-                    <em>consulta los sectores que se pueden asociar a una ocupación</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    post:<a href='#'>/sectores/{nombre}</a><br />
-                    <em>registra la información básica de un sector</em>
-                </li>
-            </ul>
-            <blockquote>
-                <p>Ubicaciones</p>
-            </blockquote>
-            <ul>
-
-                <li>
-                    get:<a href='#'>/Ubicaciones/</a><br />
-                    <em>lista de las ubicaciones Pais, Municipio, Departamento</em>
-                </li>
-                <li>
-                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                    post:<a href='#'>/Ubicaciones/{codigo}{municipio}{departamento}{pais}</a><br />
-                    <em>registra la información básica de una Ubicacion</em>
-                </li>
-            </ul>
-            <blockquote>
-                <p> Calificaciones (tipo: 1 = otorgadas, 2 = recibidas)</p>
-            </blockquote>
-            <ul>
-
-                <li>
-                    get:<a href='#'>/calificaciones/:usuario/:cantidad/:tipo</a><br />
-                    <em>método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tiopo2 = recibidas</em>
-                </li>
-                <li>
-                    get:<a href='#'>/calificaciones/pendientes/:usuario</a><br />
-                    <em>método para optener calificaciones pendientes, trae el valor 'tipoCalificacion' si es 1 son calificaciones del usuario 'Usuario del Servicio' y si es 2 corresponde a la calificacion del usuario 'Prestador del Servicio'</em>
-                </li>
-                <li>
-                    put:<a href='#'>/calificaciones/{idCalificacion}{calidad}{respeto}{puntualidad}{orientacion}{observaciones}</a><br />
-                    <em>método para realizar una calificación, los criterios son calidad, respeto, puntualidad y orientacion, se toman 3 dependiendo del tipo de calificacion y el otro criterio debe ir con valor cero (0), se envía el id de la calificacion</em>
-                </li>
-            </ul>
-            <blockquote>
-                <p>Contactos</p>
-            </blockquote>
-            <ul>
-
-                <li>
-                    get:<a href='#'>/contactos/pendientes/:idUsuario/:tipo</a><br />
-                    <em>método para obtener las solicitudes de contacto pendientes o sin responder; tipo: 1=enviadas, 2=recibidas</em>
-                </li>
-                <li>
-                    get:<a href='#'>/contactos/activos/:idUsuario</a><br />
-                    <em>método para obtener las solicitudes de contacto activas (sin calificación)</em>
-                </li>
-                <li>
-                    post:<a href='#'>/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</a><br />
-                    <em>método para realizar una solicitud, es decir cuando un usuario selecciona a un prestador de servicios y solicita contacto, se envía los id de los dos usuarios.</em>
-                </li>
-                <li>
-                    put:<a href='#'>/contactos/{idContacto}{estado}</a><br />
-                    <em>método para responder a una solicitud de contacto, la solicitud pendiente está en estado=0, si se acepta la solicitud sería estado=1 y si rechaza la solicitud será estado=2, se debe enviar el id de la solicitud de contacto un prestador de servicios puede tener varias solicitudes.</em>
-                </li>
-            </ul>
-
-            <blockquote>
-                <p>Búsqueda</p>
-            </blockquote>
-            <ul>
-                <li>
-                    get:<a href='#'>/busqueda/:ocupacion/:cantidad</a><br />
-                    <em>método para buscar perfiles de acuerdo a una ocupación, trae los perfiles que contengan la cadena de ocupacion. El parámetro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
-                </li>   
-                <li>
-                    get:<a href='#'>/busqueda/avanzada/:ocupacion/:categoria/:ciudad/:calificacion/:cantidad</a><br />
-                    <em>método para buscar perfiles de acuerdo a la ocupacion, categoría, calificación y/o ciudad, trae los perfiles que cumplan con los criterios seleccionados. El parametro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
-                </li>                      
-            </ul>
-            <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
-        </fieldset>
+            <p class="text-muted">
+                En los métodos get: los parámetros van por ruta, y están representados por dos puntos y el nombre del parámetro.
+                ejm: :id, :correo, :clave
+            </p><p class="text-muted">
+                En los métodos post, los parámetros van dentro de un formulario y están representados entre llaves
+                ejm: {nombre},{correo}{cedula}
+            </p><p class="text-danger">
+                los parámetros opcionales, se representan con el nombre y la palabra opc después de un pipe | .
+                ejm: {departamento|opc},{correo|opc}{clave|opc}
+            </p><p class="text-muted">
+                las referencias a otra fuente se escriben con una raya al piso.
+                ejm: {_id},{_imagen}
+            </p><p class="text-muted">
+                las referencias a una enumeración se escriben entre corchetes.
+                ejm: ['Uno','Dos']
+            </p>
+            <fieldset>
+                <legend>Métodos</legend>
+                <blockquote>
+                    <p>Usuarios</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/usuarios/:id</a><br />
+                        <em>consulta la información de un usuario</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/autenticar/:correo/:clave</a>
+                        <br /><em>autentica un usuario mediante correo y clave, devuelve el token de autenticación</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/usuarios/recordar/:correo</a><br />
+                        <em>envia un correo con la contraseña</em>
+                    </li>
+                    <li>
+                        post:<a href='#'>/usuarios/registrar/{nombre}{apellidos|opc}{correo}{cedula|opc}{direccion}{clave}{nacimiento}{genero['Masculino','Femenino']}</a><br />
+                        <em>registra la información básica de un usuario</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        put:<a href='#'>/usuarios/:id{nombre}{apellidos|opc}{correo}{cedula|opc}{direccion}{clave}{nacimiento}{genero['Masculino','Femenino']}{_ubicacion}{activo[true,false]}</a><br />
+                        <em>actualizar parcialmente la información de un usuario</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        put:<a href='#'>/usuarios/principal/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
+                        <em>actualizar la actividad primaria de un usuario</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        put:<a href='#'>/usuarios/secundaria/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
+                        <em>actualizar la actividad secundaria de un usuario</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/usuarios/imagen/subir</a><br />
+                        <em>formulario para cargar una imagen, solo para desarrollo</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        post:<a href='#'>/usuarios/imagen/:id{imagenUsuario}</a><br />
+                        <em>actualizar la foto de perfil,el id es un parametro por ruta url, imagenUsuario es un parametro de tipo input, debe ir en un formulario con el método post</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/usuarios/imagen/:id</a><br />
+                        <em>consulta la imagen del perfil, el parametro id es el del usuario <a href="/api/usuarios/imagen/555adb3a4c5a74cc08000002?access_token=28574b40-fdf2-11e4-9195-3b56d5dce309">Ejemp</a></em>
+                        <img alt="imagen de muestra" src="/api/usuarios/imagen/54ffe51e75d6ab5425000002" class="img-thumbnail" width="50" style="width:50px;" />
+                        <img alt="imagen de muestra" src="/api/usuarios/imagen/54ffe51e75d6ab5425000002" class="img-rounded" width="80" style="width:80px;" />
+                        <img alt="imagen de muestra" src="/api/usuarios/imagen/54ffe51e75d6ab5425000002" class="img-circle" width="100" style="width:100px;" />
+                    </li>
+                </ul>
+                <blockquote>
+                    <p>Sectores</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/sectores/</a><br />
+                        <em>consulta los sectores que se pueden asociar a una ocupación</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        post:<a href='#'>/sectores/{nombre}</a><br />
+                        <em>registra la información básica de un sector</em>
+                    </li>
+                </ul>
+                <blockquote>
+                    <p>Ubicaciones</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/Ubicaciones/</a><br />
+                        <em>lista de las ubicaciones Pais, Municipio, Departamento</em>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        post:<a href='#'>/Ubicaciones/{codigo}{municipio}{departamento}{pais}</a><br />
+                        <em>registra la información básica de una Ubicacion</em>
+                    </li>
+                </ul>
+                <blockquote>
+                    <p> Calificaciones (tipo: 1 = otorgadas, 2 = recibidas)</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/calificaciones/:usuario/:cantidad/:tipo</a><br />
+                        <em>método para optener calificaciones, el parametro cantidad es la cantidad de calificaciones mas recientes, el parametro tipo depende sei se trae tipo1= otorgadas y tipo2 = recibidas</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/calificaciones/pendientes/:usuario</a><br />
+                        <em>método para optener calificaciones pendientes, trae el valor 'tipoCalificacion' si es 1 son calificaciones del usuario 'Usuario del Servicio' y si es 2 corresponde a la calificacion del usuario 'Prestador del Servicio'</em>
+                    </li>
+                    <li>
+                        put:<a href='#'>/calificaciones/{idCalificacion}{calidad}{respeto}{puntualidad}{orientacion}{observaciones}</a><br />
+                        <em>método para realizar una calificación, los criterios son calidad, respeto, puntualidad y orientacion, se toman 3 dependiendo del tipo de calificacion y el otro criterio debe ir con valor cero (0), se envía el id de la calificacion</em>
+                    </li>
+                </ul>
+                <blockquote>
+                    <p>Contactos</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/contactos/pendientes/:idUsuario/:tipo</a><br />
+                        <em>método para obtener las solicitudes de contacto pendientes o sin responder; tipo: 1=enviadas, 2=recibidas</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/contactos/activos/:idUsuario</a><br />
+                        <em>método para obtener las solicitudes de contacto activas (sin calificación)</em>
+                    </li>
+                    <li>
+                        post:<a href='#'>/contactos/{idUsuarioSolicita}{idUsuarioRecibe}</a><br />
+                        <em>método para realizar una solicitud, es decir cuando un usuario selecciona a un prestador de servicios y solicita contacto, se envía los id de los dos usuarios.</em>
+                    </li>
+                    <li>
+                        put:<a href='#'>/contactos/{idContacto}{estado}</a><br />
+                        <em>método para responder a una solicitud de contacto, la solicitud pendiente está en estado=0, si se acepta la solicitud sería estado=1 y si rechaza la solicitud será estado=2, se debe enviar el id de la solicitud de contacto un prestador de servicios puede tener varias solicitudes.</em>
+                    </li>
+                </ul>
+                <blockquote>
+                    <p>Búsqueda</p>
+                </blockquote>
+                <ul>
+                    <li>
+                        get:<a href='#'>/busqueda/:ocupacion/:cantidad</a><br />
+                        <em>método para buscar perfiles de acuerdo a una ocupación, trae los perfiles que contengan la cadena de ocupacion. El parámetro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
+                    </li>
+                    <li>
+                        get:<a href='#'>/busqueda/avanzada/:ocupacion/:categoria/:ciudad/:calificacion/:cantidad</a><br />
+                        <em>método para buscar perfiles de acuerdo a la ocupacion, categoría, calificación y/o ciudad, trae los perfiles que cumplan con los criterios seleccionados. El parametro cantidad trae por decenas, si es 1 trae las primeras 10 ocupaciones, si es 2 trae la segunda decena.</em>
+                    </li>
+                </ul>
+                <a href="mailto:damiandelcastillo@hotmail.com">Damian Del Castillo</a>
+            </fieldset>
+        </div>
     </div>
 </body>
 </html>

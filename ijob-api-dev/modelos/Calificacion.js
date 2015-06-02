@@ -23,7 +23,6 @@ var calificacionSchema = new Schema({
     estadoCalificacion: { type: Number, required: true }
 });
 
-
 // adiciona las validaciones de campos únicos
 calificacionSchema.plugin(uniqueValidator);
 

@@ -50,4 +50,8 @@ app.use('/api', srvCalificaciones);
 var srvContactos = require('./SrvContactos');
 app.use('/api', srvContactos);
 
+// rutas para las busquedas
+var srvBusquedas = require('./SrvBusquedas');
+app.use('/api', srvBusquedas);
+
 module.exports = app;

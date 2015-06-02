@@ -8,7 +8,7 @@ function DBCalificacion() {
     var modeloUsuario = require('../modelos/Usuario');
     // referencia privada a la respuesta HTTP
     var response;
-        
+    
     // Crea calificaciones
     this.crearCalificacion = function (req, tipo) {
         var nuevaCalificacion = new modeloCalificacion();
@@ -20,7 +20,7 @@ function DBCalificacion() {
             nuevaCalificacion._usuarioOtorga = req._usuarioRecibe;
             nuevaCalificacion._usuarioRecibe = req._usuarioSolicita;
         }
-
+        
         nuevaCalificacion.fecha = new Date();
         nuevaCalificacion.tipoCalificacion = tipo;
         nuevaCalificacion.estadoCalificacion = 0;
@@ -64,8 +64,8 @@ function DBCalificacion() {
         // actualiza la calificacion del usuario        
         var vCalAnt = modeloUsuario.findById(calificacionActualizada._usuarioRecibe);
         // FALTA ACTUALIZAR LA CALIFICACION 
-       // console.log(vCalAnt);        
-
+        // console.log(vCalAnt);        
+        
         // instancia una solicitud de contacto para actualizar el estado
         modeloContacto.findOne({ _id: calificacionActualizada._idContacto }, function onContactoEncontrado(err, contactoEncontrado) {
             if (err) {
@@ -113,14 +113,14 @@ function DBCalificacion() {
         }
         response.json(calificaciones);
     }
-
+    
     // Obtiene calificaciones pendientes
     this.buscarCalificacion = function (pUsuario, res) {
         response = res;
-            modeloCalificacion
+        modeloCalificacion
             .find({ _usuarioOtorga: pUsuario, estadoCalificacion: 0 })
             .sort({ 'fecha': 'ascending' })
-            .exec(onBuscarCalificaciones);        
+            .exec(onBuscarCalificaciones);
     }
     
     // resultado de consultar calificaciones pendientes

@@ -1,7 +1,7 @@
 ﻿// Todas las personas que tengan acceso al aplicativo
 var mongoose = require('mongoose');
 var cliente = require('../datos/Cliente.js');
-var modeloUbicacion = require('../modelos/Ubicacion');
+var modeloUbicacion = require('./Ubicacion');
 
 // valida los campos únicos
 var uniqueValidator = require('mongoose-unique-validator');
@@ -11,7 +11,7 @@ var ocupacionSchema = new Schema({
     nombre: { type: String, required: true  , unique: true, trim: true },
     descripcion: { type: String, required: true, trim: true },
     experiencia: { type: Number, required: true },
-    _sector : { type: Schema.Types.ObjectId, ref: 'Sector' },
+    _sector : { type: Schema.ObjectId, ref: 'Sector' },
 });
 
 var usuarioSchema = new Schema({
@@ -22,7 +22,7 @@ var usuarioSchema = new Schema({
     cedula: { type: Number, unique: true },
     genero: { type: String, required: true, enum: ['Masculino', 'Femenino'] },
     nacimiento: Date, 
-    _ubicacion : { type: Schema.Types.ObjectId, ref: 'Ubicacion' },
+    _ubicacion : { type: Schema.ObjectId , ref: 'Ubicacion' },
     ocupaciones : [ocupacionSchema],
     direccion: { type: String },
     calificacion: { type: Number },

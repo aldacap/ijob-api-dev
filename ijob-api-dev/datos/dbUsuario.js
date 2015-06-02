@@ -3,6 +3,7 @@
  */
 
 function DBUsuario() {
+    var modeloUbicacion = require('../modelos/Ubicacion');
     var modeloUsuario = require('../modelos/Usuario');
     var mongoose = require('mongoose');
     var smptMailer = require('./SMTPMailer.js');
@@ -14,15 +15,29 @@ function DBUsuario() {
     var DBImagen = require('../datos/DBImagen');
     var dbImagen = new DBImagen();
     
-    //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
-    this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
+    //var modeloUbicacion = require('./Ubicacion');
+    
+    // retorna la información de un usuario
+    this.consultarUsuario = function (idUsuario, res) {
         response = res;
         var Ubicacion = mongoose.model('Ubicacion');
         modeloUsuario
-        .findOne({ correo: parametroCorreo, clave: parametroClave })
-        .populate('_ubicacion', 'pais departamento municipio')
-        .select('_id correo token nombre apellidos cedula genero nacimiento ocupaciones calificacion admin _ubicacion')
-        .exec(onUsuarioEncontrado);
+        .findById(idUsuario)
+        .select('correo nombre apellidos cedula genero nacimiento ocupaciones calificacion admin _ubicacion')
+        .populate('_ubicacion')
+        .exec(onEndConsultarUsuario);
+    }
+    
+    // retorna el usuario encontrado en formato json
+    function onEndConsultarUsuario(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        response.json(usuarioEncontrado);
+    }
+    
+    //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
+    this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
+        response = res;
+        modeloUsuario.findOne({ correo: parametroCorreo , clave: parametroClave }, 'nombre apellidos token', onUsuarioEncontrado);
     }
     
     // retorna el usuario encontrado en formato json
@@ -32,7 +47,7 @@ function DBUsuario() {
     }
     
     var callbackDone;
-    //  Valida el token de un usuario
+    //  Valida el token de un usuario, utilidad para los métodos rivados
     this.validarUsuario = function (parametroToken, done) {
         callbackDone = done;
         modeloUsuario.findOne({ token: parametroToken }, 'nombre apellidos correo', onUsuarioValidado);
@@ -152,11 +167,14 @@ function DBUsuario() {
     function onActualizarUsuarioEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
-        
         for (var field in usuarioActualizar) {
             usuarioEncontrado[field] = usuarioActualizar[field];
+            if (field === 'clave') {
+                usuarioEncontrado.token = uuid.v1();
+            }
         }
-        
+        usuarioEncontrado.activo = true;
+        usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(onActualizarUsuarioGuardado);
     }
     // Actualiza un usuario satisfatoriamente
