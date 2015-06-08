@@ -14,6 +14,7 @@ var ocupacionSchema = new Schema({
     _sector : { type: Schema.ObjectId, ref: 'Sector' },
 });
 
+// estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
 var usuarioSchema = new Schema({
     correo : { type: String, required: true, unique: true },
     clave: { type: String, requerid: true },
@@ -33,7 +34,8 @@ var usuarioSchema = new Schema({
     activo: { type: Boolean, required: true },
     // uuid para autenticación de los servicios
     token: { type: String, required: true },
-    admin : { type: Boolean, required : true }
+    admin : { type: Boolean, required : true },
+    estado: { type: Number, default: 0, enum: [1, 2, 3, 4, 5] },
 });
 
 

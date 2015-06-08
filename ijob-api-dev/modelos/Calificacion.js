@@ -8,6 +8,7 @@ var cliente = require('../datos/cliente');
 var uniqueValidator = require('mongoose-unique-validator');
 var Schema = mongoose.Schema;
 
+// estados: 0:pendiente, 1:realizada, 2:automatica
 var calificacionSchema = new Schema({
     fecha: { type: Date, default: Date.now },
     tipoCalificacion: { type: Number, required: true },
@@ -20,7 +21,7 @@ var calificacionSchema = new Schema({
     _usuarioOtorga : { type: Schema.Types.ObjectId, ref: 'Usuario' },
     _usuarioRecibe : { type: Schema.Types.ObjectId, ref: 'Usuario' },
     _idContacto : { type: Schema.Types.ObjectId, ref: 'Contacto' },
-    estadoCalificacion: { type: Number, required: true }
+    estadoCalificacion: { type: Number, required: true, enum: [0, 1, 2] }
 });
 
 // adiciona las validaciones de campos únicos

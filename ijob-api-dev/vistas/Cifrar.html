@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+</head>
+<body>
+    <span id="lblHash"></span>
+    <script>
+        var textoPlano = "textoPlano";
+        // Frase de encriptación
+        var iv = "1234567890123456";
+        var hash = CryptoJS.SHA1(iv + textoPlano + iv);
+        document.getElementById('lblHash').innerHTML = hash;
+        //eee5ea82041b2d1579301ec076ab3882ea5bc7a9
+    </script>
+</body>
+</html>

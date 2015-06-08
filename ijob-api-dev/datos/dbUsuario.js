@@ -15,6 +15,9 @@ function DBUsuario() {
     var DBImagen = require('../datos/DBImagen');
     var dbImagen = new DBImagen();
     
+    var Cifrador = require('../seguridad/Cifrador.js');
+    var cifrador = new Cifrador();
+    
     //var modeloUbicacion = require('./Ubicacion');
     
     // retorna la información de un usuario
@@ -37,7 +40,7 @@ function DBUsuario() {
     //  Entrada al sistema, debe ser el primer metodo que se utiliza para solicitar acceso
     this.autenticarUsuario = function (parametroCorreo, parametroClave, res) {
         response = res;
-        modeloUsuario.findOne({ correo: parametroCorreo , clave: parametroClave }, 'nombre apellidos token', onUsuarioEncontrado);
+        modeloUsuario.findOne({ correo: parametroCorreo , clave: parametroClave }, 'nombre apellidos token estado', onUsuarioEncontrado);
     }
     
     // retorna el usuario encontrado en formato json
@@ -70,6 +73,8 @@ function DBUsuario() {
         nuevoUsuario.admin = false;
         nuevoUsuario.activo = true;
         nuevoUsuario.creado = Date.now();
+        // el estado inicial de un usuario es registrado: 1
+        nuevoUsuario.estado = 1;
         nuevoUsuario.save(onUsuarioGuardado);
     }
     
@@ -124,8 +129,14 @@ function DBUsuario() {
     // retorna el usuario encontrado en formato json
     function onUsuarioRecordarEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         var mensajeRecordarClave = 'Te estamos enviando este correo en respuesta a tu solicitud:<br/>Tu clave es: <strong>{0}</strong>';
-        mailer.enviarCorreo(usuarioEncontrado.correo, 'Clave IJob', usuarioEncontrado.clave, mensajeRecordarClave.replace('{0}', usuarioEncontrado.clave));
+        
+        var nuevaClave = "textoPlano";
+        var hashClave = cifrador.hash(nuevaClave);
+        
+       // var clavePlana = cifrador.descifrar(usuarioEncontrado.clave);
+        mailer.enviarCorreo(usuarioEncontrado.correo, 'Clave IJob', hashClave, mensajeRecordarClave.replace('{0}', hashClave));
         response.json({ 'Mensaje': 'Clave enviada' });
     }
     

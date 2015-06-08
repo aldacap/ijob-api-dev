@@ -35,6 +35,13 @@ router
     dbUsuario.registrarUsuario(req, res);
 });
 
+// formulario para cargar una imagen, solo para desarrollo
+router
+  .route('/usuarios/cifrar/ejemplo')
+  .get(function (req, res) {
+    res.sendfile("./vistas/cifrar.html");
+});
+
 // actualizar parcialmente un usuario
 router
   .route('/usuarios/:id')
