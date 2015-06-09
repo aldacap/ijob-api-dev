@@ -1,6 +1,6 @@
 ﻿{
-    "devDatConnStr": "mongodb://localhost:27017/k1DB",
-    "devDatConnStr_": "mongodb://k1_user:k1_pass@ds043329.mongolab.com:43329/k1db",
-    "devImgConnStr": "mongodb://localhost:27017/ijobi",
-    "devImgConnStr_": "mongodb://k1_user:k1_pass@ds039950.mongolab.com:39950/ijobi"
+    "devDatConnStr_": "mongodb://localhost:27017/k1DB",
+    "devDatConnStr": "mongodb://k1_user:k1_pass@ds043329.mongolab.com:43329/k1db",
+    "devImgConnStr_": "mongodb://localhost:27017/ijobi",
+    "devImgConnStr": "mongodb://k1_user:k1_pass@ds039950.mongolab.com:39950/ijobi"
 }

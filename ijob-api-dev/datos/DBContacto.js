@@ -6,6 +6,7 @@ function DBContacto() {
     var modeloContacto = require('../modelos/Contacto');
     var DBCalificacion = require('./DBCalificacion.js');
     var dbCalificacion = new DBCalificacion();
+    var mongoose = require('mongoose');
     // referencia privada a la respuesta HTTP
     var response;
     
@@ -49,7 +50,7 @@ function DBContacto() {
             dbCalificacion.crearCalificacion(contactoEncontrado, 1);
             dbCalificacion.crearCalificacion(contactoEncontrado, 2);
         }
-
+        
         contactoEncontrado.estado = vEstado;
         
         contactoEncontrado.save(function onContactoActualizado(err, contactoActualizado) {
@@ -61,16 +62,34 @@ function DBContacto() {
     // Obtener solicitudes de contacto pendientes
     this.consultarSolicitudes = function (pUsuario, pTipo, res) {
         response = res;
+        
+        var usuario = mongoose.model('Usuario');
+        var query = modeloContacto.find({});
+        
+        query.where('estado', 0);
+        
         if (pTipo == 1) {
-            modeloContacto
-            .find({ _usuarioSolicita: pUsuario, estado: 0 })
-            .exec(onEncontrarSolicitudes);
+            query.where('_usuarioSolicita', pUsuario);
+            query.select('fecha _usuarioRecibe');
+            query.sort({ 'fecha': 'asc' });
+            query.populate('_usuarioRecibe', 'nombre apellidos genero calificacion ocupaciones _imagen');
         }
         else {
-            modeloContacto
-            .find({ _usuarioRecibe: pUsuario, estado: 0 })
-            .exec(onEncontrarSolicitudes);
+            query.where('_usuarioRecibe', pUsuario);
+            query.select('fecha _usuarioSolicita');
+            query.sort({ 'fecha': 'asc' });
+            query.populate('_usuarioSolicita', 'nombre apellidos genero calificacion ocupaciones _imagen');
         }
+        
+        query.exec(onEncontrarSolicitudes);
+    }
+    
+    // resultado de consultar solicitudes de contacto pendients
+    function onEncontrarSolicitudes(err, solicitudes) {
+        if (err) {
+            return response.send(err);
+        }
+        response.json(solicitudes);
     }
     
     // Obtener solicitudes de contacto activas
@@ -79,13 +98,13 @@ function DBContacto() {
         modeloContacto
             .find({ 'estado': { $in: [1, 3] } })
             .and([
-                { $or: [{ '_usuarioSolicita': pUsuario }, { '_usuarioRecibe': pUsuario }] }
-            ])
-            .exec(onEncontrarSolicitudes);
+            { $or: [{ '_usuarioSolicita': pUsuario }, { '_usuarioRecibe': pUsuario }] }
+        ])
+            .exec(onBuscarSolicitudes);
     }
     
     // resultado de consultar solicitudes de contacto
-    function onEncontrarSolicitudes(err, solicitudes) {
+    function onBuscarSolicitudes(err, solicitudes) {
         if (err) {
             return response.send(err);
         }
