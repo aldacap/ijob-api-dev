@@ -36,6 +36,7 @@
     <Compile Include="datos\DBBusqueda.js" />
     <Compile Include="datos\DBCalificacion.js" />
     <Compile Include="datos\DBContacto.js" />
+    <Compile Include="datos\DBEtiqueta.js" />
     <Compile Include="datos\DBImagen.js" />
     <Compile Include="datos\DBSector.js" />
     <Compile Include="datos\DBUbicacion.js" />
@@ -43,6 +44,7 @@
     <Compile Include="datos\SMTPMailer.js" />
     <Compile Include="modelos\Calificacion.js" />
     <Compile Include="modelos\Contacto.js" />
+    <Compile Include="modelos\Etiqueta.js" />
     <Compile Include="modelos\Sector.js" />
     <Compile Include="modelos\Ubicacion.js" />
     <Compile Include="modelos\Usuario.js" />
@@ -63,6 +65,7 @@
     <Content Include="vistas\ImagenSubir.html" />
     <Content Include="vistas\ImagenUsuario.html" />
     <Content Include="vistas\index.html" />
+    <Content Include="vistas\RegistroCompleto.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config" />
     <Content Include="bin\ChangeConfig.ps1" />

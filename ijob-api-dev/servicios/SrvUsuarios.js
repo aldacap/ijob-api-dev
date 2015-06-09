@@ -1,9 +1,7 @@
 ﻿// api para los usuarios
 var express = require('express');
 var router = express.Router();
-
 var seguridad = require('./seguridad');
-
 var DBUsuario = require('../datos/dbUsuario');
 var dbUsuario = new DBUsuario();
 
@@ -35,6 +33,13 @@ router
     dbUsuario.registrarUsuario(req, res);
 });
 
+router
+  .route('/usuarios/registrar/:id')
+  .get(function (req, res) {
+    dbUsuario.terminarRegistro(req.params.id, res);
+    res.sendfile("./vistas/RegistroCompleto.html");
+});
+
 // formulario para cargar una imagen, solo para desarrollo
 router
   .route('/usuarios/cifrar/ejemplo')
@@ -46,21 +51,45 @@ router
 router
   .route('/usuarios/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
-    dbUsuario.actualizarUsuario(req.params.id , req.body, res);
+    // solo se permite para usuarios confirmados    
+    if (req.user.estado >= dbUsuario.estados.Confirmado) {
+        dbUsuario.actualizarUsuario(req.params.id , req.body, res);
+    }
+    else {
+        res.statusCode = 403;
+        res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+        res.send({ message: 'Error, primero debe confirmar el correo' });
+    }
 });
 
 // actualizar ocupacion principal
 router
   .route('/usuarios/principal/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
-    dbUsuario.actualizarOcupacion(true, req.params.id , req.body, res);
+    // solo se permite para usuarios Completados    
+    if (req.user.estado >= dbUsuario.estados.Completado) {
+        dbUsuario.actualizarOcupacion(true, req.params.id , req.body, res);
+    }
+    else {
+        res.statusCode = 403;
+        res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+        res.send({ message: 'Error, primero debe completar la información básica' });
+    }
 });
 
 // actualizar ocupacion principal
 router
   .route('/usuarios/secundaria/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
-    dbUsuario.actualizarOcupacion(false, req.params.id , req.body, res);
+    // solo se permite para usuarios Completados    
+    if (req.user.estado >= dbUsuario.estados.Completado) {
+        dbUsuario.actualizarOcupacion(false, req.params.id , req.body, res);
+    }
+    else {
+        res.statusCode = 403;
+        res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+        res.send({ message: 'Error, primero debe completar la información básica' });
+    }
 });
 
 // formulario para cargar una imagen, solo para desarrollo

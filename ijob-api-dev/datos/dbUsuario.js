@@ -18,7 +18,21 @@ function DBUsuario() {
     var Cifrador = require('../seguridad/Cifrador.js');
     var cifrador = new Cifrador();
     
-    //var modeloUbicacion = require('./Ubicacion');
+    var DBEtiqueta = require('./DBEtiqueta');
+    var dbEtiqueta = new DBEtiqueta();
+    
+    // estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
+    var EstadosUsuario = function () {
+        return {
+            'Registrado': 1,
+            'Confirmado': 2,
+            'Completado': 3,
+            'Disponible': 4,
+            'NoDisponible': 5
+        };
+    }();
+    
+    this.estados = EstadosUsuario;
     
     // retorna la información de un usuario
     this.consultarUsuario = function (idUsuario, res) {
@@ -53,7 +67,7 @@ function DBUsuario() {
     //  Valida el token de un usuario, utilidad para los métodos rivados
     this.validarUsuario = function (parametroToken, done) {
         callbackDone = done;
-        modeloUsuario.findOne({ token: parametroToken }, 'nombre apellidos correo', onUsuarioValidado);
+        modeloUsuario.findOne({ token: parametroToken }, 'nombre apellidos correo estado admin', onUsuarioValidado);
     }
     
     // retorna la respuesta
@@ -74,14 +88,21 @@ function DBUsuario() {
         nuevoUsuario.activo = true;
         nuevoUsuario.creado = Date.now();
         // el estado inicial de un usuario es registrado: 1
-        nuevoUsuario.estado = 1;
+        nuevoUsuario.estado = EstadosUsuario.Registrado;
         nuevoUsuario.save(onUsuarioGuardado);
     }
     
     // resultado de guardar un usuario
     function onUsuarioGuardado(err, usuarioGuardado) {
         if (err) return response.send(err);
-        response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id });
+        
+        dbEtiqueta.consultarEtiqueta('correo-registrar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
+            if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
+            var mensajeRegistro = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.id);
+            mailer.enviarCorreo(usuarioGuardado.correo, 'Bienvenido a IJob', usuarioGuardado.id, mensajeRegistro);
+            //response.json({ 'Mensaje': 'Bienvenido enviada' });
+            response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id });
+        });
     }
     
     // valor local de la ocupacion principal
@@ -114,6 +135,8 @@ function DBUsuario() {
             usuarioEncontrado.ocupaciones.push(nuevaOcupacion);
         }
         
+        // a partir de este momento el usuario ya aparece en las búsquedas
+        usuarioEncontrado.estado = EstadosUsuario.Disponible;
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioActualizado) {
             if (err) return response.send(err);
             response.json(usuarioActualizado);
@@ -126,19 +149,34 @@ function DBUsuario() {
         modeloUsuario.findOne({ correo: parametroCorreo }, 'correo clave', onUsuarioRecordarEncontrado);
     }
     
-    // retorna el usuario encontrado en formato json
+    var nuevaClave;
+    // busca un usuario con su correo y le genera una clave aleatoria
     function onUsuarioRecordarEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
-        var mensajeRecordarClave = 'Te estamos enviando este correo en respuesta a tu solicitud:<br/>Tu clave es: <strong>{0}</strong>';
         
-        var nuevaClave = "textoPlano";
+        nuevaClave = cifrador.random(8);
         var hashClave = cifrador.hash(nuevaClave);
         
-       // var clavePlana = cifrador.descifrar(usuarioEncontrado.clave);
-        mailer.enviarCorreo(usuarioEncontrado.correo, 'Clave IJob', hashClave, mensajeRecordarClave.replace('{0}', hashClave));
-        response.json({ 'Mensaje': 'Clave enviada' });
+        usuarioEncontrado.activo = true;
+        usuarioEncontrado.modificado = Date.now();
+        usuarioEncontrado.clave = hashClave;
+        usuarioEncontrado.save(onUsuarioRecordarEncontradoGuardado);
     }
+    
+    // Consulta el cuerpo de un mensaje en la bd y envía un correo con su nueva clave
+    function onUsuarioRecordarEncontradoGuardado(err, usuarioGuardado) {
+        if (err) return response.send(err);
+        
+        dbEtiqueta.consultarEtiqueta('correo-recordar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
+            if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
+            var mensajeRecordarClave = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.correo);
+            mensajeRecordarClave = mensajeRecordarClave.replace('{1}', nuevaClave);            
+            mailer.enviarCorreo(usuarioGuardado.correo, 'Clave IJob', nuevaClave, mensajeRecordarClave);
+            response.json({ 'Mensaje': 'Clave enviada' });
+        });
+    }
+    
     
     var nombreArchivoImagen;
     // actualiza la foto de perfil de un usuario
@@ -184,6 +222,7 @@ function DBUsuario() {
                 usuarioEncontrado.token = uuid.v1();
             }
         }
+        usuarioEncontrado.estado = EstadosUsuario.Completado;
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(onActualizarUsuarioGuardado);
@@ -192,6 +231,22 @@ function DBUsuario() {
     function onActualizarUsuarioGuardado(err, usuarioGuardado) {
         if (err) return response.send(err);
         response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
+    }
+    
+    // Actualiza el estado de un usuario
+    this.terminarRegistro = function (_idUsuario, res) {
+        response = res;
+        modeloUsuario.findById(_idUsuario, onTerminarRegistroEncontrado);
+    }
+    // encuentra un usuario en la BD con el id 
+    function onTerminarRegistroEncontrado(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        
+        usuarioEncontrado.estado = EstadosUsuario.Confirmado;
+        usuarioEncontrado.activo = true;
+        usuarioEncontrado.modificado = Date.now();
+        usuarioEncontrado.save();
     }
 }
 
