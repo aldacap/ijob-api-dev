@@ -2,22 +2,22 @@
  * CRUD para las Busquedas
  */
 
-function DBBusqueda(){
-
+function DBBusqueda() {
+    
     var modeloUsuario = require('../modelos/Usuario');
     var response;
-
+    
     // Obtiene datos de la busqueda
     this.buscarPerfiles = function (pOcupacion, pCantidad, res) {
         response = res;
-
+        
         modeloUsuario
         .find({ 'ocupaciones.nombre': { $regex: pOcupacion, $options: "i" } })
-        .and({'activo': 'true'})
+        .and({ 'activo': 'true' })
+        .and({ 'estado': 4 })
         .sort({ 'calificacion': 'descending' })
         .limit(10 * pCantidad)
-        //.populate('_imagen')
-        .select('nombre apellidos calificacion ocupaciones genero')
+        .select('_id nombre apellidos calificacion ocupaciones genero')
         .exec(onBuscarPerfiles);
     }
     
@@ -28,21 +28,35 @@ function DBBusqueda(){
         }
         response.json(perfiles);
     }
-
+    
     // Obtiene datos de la busqueda
-    this.buscarAvanzada = function (pOcupacion, pCiudad, pCategoria, pCalificacion, pExperiencia, res) {
+    this.buscarAvanzada = function (req, res) {
         response = res;
-        if (!pExperiencia) {
-            pExperiencia = 0;
-        } 
+        var query = modeloUsuario.find({});
         
-        modeloUsuario
-        .find({ 'ocupaciones.nombre': { $regex: pOcupacion, $options: "i" } })
-        .and({ 'ocupaciones.experiencia': { $gte: pExperiencia } })
-        .and({ 'activo': 'true' })
-        .sort({ 'calificacion': 'descending' })
-        .limit(10)
-        .exec(onBuscarAvanzada);
+        query.where('activo', 'true');
+        query.where('estado', 4);
+        
+        if (req.calificacion) {
+            query.where('calificacion').gte(req.calificacion);
+        }
+        
+        if (req.ocupacion) {
+            query.where('ocupaciones.nombre').equals(req.ocupacion);
+        }
+        
+        //if (req.ocupacion) {
+        //    query.where('ocupaciones.nombre').equals(req.ocupacion);
+        //}
+        
+        //if (req.ocupacion) {
+        //    query.where('ocupaciones.nombre').equals(req.ocupacion);
+        //}
+        
+        query.sort({ 'calificacion': 'descending' })
+        query.limit(10);
+        query.exec(onBuscarAvanzada);
+
     }
     
     // resultado de la busqueda

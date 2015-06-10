@@ -21,9 +21,9 @@ router
  *  obtiene datos del resultado de busqueda avanzada
  */
 router
-  .route('/busqueda/avanzada/:ocupacion/:ciudad/:categoria/:calificacion/:cantidad')
-  .get(function (req, res) {
-    dbBusqueda.buscarAvanzada(req.params.ocupacion, req.params.ciudad, req.params.categoria, req.params.calificacion, req.params.cantidad, res);
+  .route('/busqueda/avanzada/')
+  .put(function (req, res) {
+    dbBusqueda.buscarAvanzada(req.body, res);
 });
 
 module.exports = router;
