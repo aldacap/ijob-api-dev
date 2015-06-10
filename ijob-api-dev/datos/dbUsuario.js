@@ -171,7 +171,7 @@ function DBUsuario() {
         dbEtiqueta.consultarEtiqueta('correo-recordar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
             if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
             var mensajeRecordarClave = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.correo);
-            mensajeRecordarClave = mensajeRecordarClave.replace('{1}', nuevaClave);            
+            mensajeRecordarClave = mensajeRecordarClave.replace('{1}', nuevaClave);
             mailer.enviarCorreo(usuarioGuardado.correo, 'Clave IJob', nuevaClave, mensajeRecordarClave);
             response.json({ 'Mensaje': 'Clave enviada' });
         });
@@ -212,17 +212,22 @@ function DBUsuario() {
         usuarioActualizar = reqUsuario;
         modeloUsuario.findById(_idUsuario, onActualizarUsuarioEncontrado);
     }
-    // encuentra un usuario en la BD con el id 
+    
+    // encuentra un usuario en la BD con el id, si cambia la clave, se genera un nuevo token
     function onActualizarUsuarioEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         for (var field in usuarioActualizar) {
             usuarioEncontrado[field] = usuarioActualizar[field];
             if (field === 'clave') {
-                usuarioEncontrado.token = uuid.v1();
+                if (usuarioEncontrado[field] !== usuarioActualizar[field])
+                    usuarioEncontrado.token = uuid.v1();
             }
         }
-        usuarioEncontrado.estado = EstadosUsuario.Completado;
+        
+        if (usuarioEncontrado.estado < EstadosUsuario.Completado)
+            usuarioEncontrado.estado = EstadosUsuario.Completado;
+        
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(onActualizarUsuarioGuardado);
@@ -247,6 +252,24 @@ function DBUsuario() {
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save();
+    }
+    
+    var bolEstadoDisponible;
+    // Actualiza el estado de un usuario
+    this.cambiarDisponibilidad = function (_idUsuario, bolDisponible, res) {
+        response = res;
+        bolEstadoDisponible = bolDisponible;
+        modeloUsuario.findById(_idUsuario, onCambiarDisponibilidadEncontrado);
+    }
+    // encuentra un usuario en la BD con el id 
+    function onCambiarDisponibilidadEncontrado(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        usuarioEncontrado.estado = bolEstadoDisponible ?  EstadosUsuario.Disponible : EstadosUsuario.NoDisponible;
+        usuarioEncontrado.activo = true;
+        usuarioEncontrado.modificado = Date.now();
+        usuarioEncontrado.save();
+        response.send({ message: 'OK, Se actualizó la disponibilidad', estado: bolEstadoDisponible ?  'Disponible' : 'NoDisponible' });
     }
 }
 

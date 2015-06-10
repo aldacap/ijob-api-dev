@@ -33,13 +33,10 @@
     </style>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-
     <!--link jQuery's CDN provided by MaxCDN-->
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
@@ -50,7 +47,6 @@
             <h3>Damian Del Castillo 2015</h3>
             <h4>Los métodos privados <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> deben llevar un token válido en el parametro <em>access_token</em></h4>
             <h4>Todos los servicios se encuentran dentro de la ruta <a href='#'>/api</a></h4>
-
             <p class="text-muted">
                 En los métodos get: los parámetros van por ruta, y están representados por dos puntos y el nombre del parámetro.
                 ejm: :id, :correo, :clave
@@ -123,7 +119,12 @@
                     <li>
                         get:<a href='#'>/usuarios/cifrar/ejemplo</a><br />
                         <em>formulario de ejemplo que implementa el algoritmo de encriptación</em>
-                    </li>                    
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        put:<a href='#'>/usuarios/disponible/:id{disponible['true','false']}</a><br />
+                        <em>cambia la disponibilidad de un usuario, solo se permite para usuarios Disponibles con alguna ocupacion</em>
+                    </li>
                 </ul>
                 <blockquote>
                     <p>Sectores</p>

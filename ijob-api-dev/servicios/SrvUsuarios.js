@@ -118,4 +118,20 @@ router
     dbUsuario.consultarImagen(req.params.id, res);
 });
 
+// cambia la disponibilidad de un usuario
+router
+  .route('/usuarios/disponible/:id')
+  .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+    // solo se permite para usuarios Disponibles con alguna ocupacion   
+    if (req.user.estado >= dbUsuario.estados.Disponible) {
+        var bolDsiponible = req.body.disponible === 'true' ? true : false;
+        dbUsuario.cambiarDisponibilidad(req.params.id , bolDsiponible , res);
+    }
+    else {
+        res.statusCode = 403;
+        res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+        res.send({ message: 'Error, debe registrar al menos una ocupación' });
+    }
+});
+
 module.exports = router;
