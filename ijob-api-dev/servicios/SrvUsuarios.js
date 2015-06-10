@@ -40,7 +40,7 @@ router
     res.sendfile("./vistas/RegistroCompleto.html");
 });
 
-// formulario para cargar una imagen, solo para desarrollo
+// formulario de ejemplo que implementa el algoritmo de encriptación
 router
   .route('/usuarios/cifrar/ejemplo')
   .get(function (req, res) {
