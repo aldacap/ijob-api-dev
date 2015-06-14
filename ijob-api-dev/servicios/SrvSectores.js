@@ -22,4 +22,18 @@ router
     dbSector.crearSector(req, res);
 });
 
+// consulta las ocupaciones
+router
+  .route('/ocupaciones')
+  .get(function (req, res) {
+    dbSector.consultarOcupaciones(res);
+});
+
+// consulta los niveles de estudio
+router
+  .route('/escolaridad')
+  .get(function (req, res) {
+    dbSector.consultarEscolaridad(res);
+});
+
 module.exports = router;

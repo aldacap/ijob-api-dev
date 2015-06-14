@@ -4,6 +4,8 @@
 
 function DBSector() {
     var modeloSector = require('../modelos/Sector');
+    var modeloOcupacion = require('../modelos/Ocupacion');
+    var modeloEscolaridad = require('../modelos/Escolaridad');
     // referencia privada a la respuesta HTTP
     var response;
     
@@ -21,14 +23,37 @@ function DBSector() {
         response.send({ message: 'OK, sector adicionado', _id: sectorGuardado._id });
     }
     
+    // consulta los sectores
     this.consultarSectores = function (res) {
         response = res;
-        modeloSector.find(onEncontrarSectores);
+        modeloSector.find(onEncontrarSectores, '_id nombre');
     }
     
     function onEncontrarSectores(err, sectores) {
         if (err) return res.send(err);
         response.json(sectores);
+    }
+
+    // consulta las ocupaciones
+    this.consultarOcupaciones = function (res) {
+        response = res;
+        modeloOcupacion.find(onEncontrarOcupaciones, '_id nombre _sector');
+    }
+    
+    function onEncontrarOcupaciones(err, ocupaciones) {
+        if (err) return res.send(err);
+        response.json(ocupaciones);
+    }
+
+    // consulta los niveles de escolaridad
+    this.consultarEscolaridad = function (res) {
+        response = res;
+        modeloEscolaridad.find(onEncontrarEscolaridad, '_id nombre');
+    }
+    
+    function onEncontrarEscolaridad(err, escolaridad) {
+        if (err) return res.send(err);
+        response.json(escolaridad);
     }
 }
 
