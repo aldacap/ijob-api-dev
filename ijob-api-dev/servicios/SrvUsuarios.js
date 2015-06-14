@@ -30,9 +30,10 @@ router
 router
   .route('/usuarios/registrar')
   .post(function (req, res) {
-    dbUsuario.registrarUsuario(req, res);
+    dbUsuario.registrarUsuario(req.body, res);
 });
 
+// termina el registro de un usuario al confirmar su correo
 router
   .route('/usuarios/registrar/:id')
   .get(function (req, res) {
@@ -47,13 +48,13 @@ router
     res.sendfile("./vistas/cifrar.html");
 });
 
-// actualizar parcialmente un usuario
+// actualizar la información personal de un usuario
 router
-  .route('/usuarios/:id')
+  .route('/usuarios/personal/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     // solo se permite para usuarios confirmados    
     if (req.user.estado >= dbUsuario.estados.Confirmado) {
-        dbUsuario.actualizarUsuario(req.params.id , req.body, res);
+        dbUsuario.actualizarInformacion(req.params.id , req.body, res);
     }
     else {
         res.statusCode = 403;
@@ -62,33 +63,48 @@ router
     }
 });
 
-// actualizar ocupacion principal
+// actualizar la ocupacion de  un usuario
 router
-  .route('/usuarios/principal/:id')
+  .route('/usuarios/ocupacion/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
-    // solo se permite para usuarios Completados    
+    // solo se permite para usuarios confirmados    
     if (req.user.estado >= dbUsuario.estados.Completado) {
-        dbUsuario.actualizarOcupacion(true, req.params.id , req.body, res);
+        dbUsuario.actualizarOcupacion(req.params.id , req.body, res);
     }
     else {
         res.statusCode = 403;
         res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-        res.send({ message: 'Error, primero debe completar la información básica' });
+        res.send({ message: 'Error, primero debe completar su información personal' });
     }
 });
 
-// actualizar ocupacion principal
+// actualizar la ubicación de un usuario
 router
-  .route('/usuarios/secundaria/:id')
+  .route('/usuarios/ubicacion/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
-    // solo se permite para usuarios Completados    
+    // solo se permite para usuarios confirmados    
     if (req.user.estado >= dbUsuario.estados.Completado) {
-        dbUsuario.actualizarOcupacion(false, req.params.id , req.body, res);
+        dbUsuario.actualizarUbicacion(req.params.id , req.body, res);
     }
     else {
         res.statusCode = 403;
         res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-        res.send({ message: 'Error, primero debe completar la información básica' });
+        res.send({ message: 'Error, pprimero debe completar su información personal' });
+    }
+});
+
+// actualizar la clave de un usuario
+router
+  .route('/usuarios/clave/:id')
+  .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
+    // solo se permite para usuarios confirmados    
+    if (req.user.estado >= dbUsuario.estados.Confirmado) {
+        dbUsuario.actualizarClave(req.params.id , req.body, res);
+    }
+    else {
+        res.statusCode = 403;
+        res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+        res.send({ message: 'Error, primero debe confirmar el correo' });
     }
 });
 

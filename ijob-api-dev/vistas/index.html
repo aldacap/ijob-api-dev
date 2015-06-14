@@ -86,19 +86,26 @@
                         <em>registra la información básica de un usuario, el usuario queda en estado registrado</em>
                     </li>
                     <li>
+                        <!--nombre,apellidos,nacimiento,genero,correo,cedula,estado-->
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                        put:<a href='#'>/usuarios/:id{nombre}{apellidos|opc}{correo}{cedula|opc}{direccion}{clave}{nacimiento}{genero['Masculino','Femenino']}{_ubicacion}{activo[true,false]}</a><br />
-                        <em>actualizar parcialmente la información de un usuario, el usuario debe haber confirmado el correo electrónico</em>
+                        put:<a href='#'>/usuarios/personal/:id{nombre}{apellidos|opc}{correo}{cedula|opc}{nacimiento}{genero['Masculino','Femenino']}</a><br />
+                        <em>actualizar la información personal de un usuario, el usuario debe haber confirmado el correo electrónico</em>
+                    </li>
+                    <li>
+                        <!--principal secundario experiencia nivel cursos ocupacion-->
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        put:<a href='#'>/usuarios/ocupacion/:id{_principal}{_secundario}{experiencia}{nivel}{cursos}{ocupacion}</a><br />
+                        <em>actualizar la ocupación de un usuario, el usuario debe haber completado la información</em>
                     </li>
                     <li>
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                        put:<a href='#'>/usuarios/principal/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
-                        <em>actualizar la actividad primaria de un usuario, el usuario debe haber completado la información básica, este usuario ya aparece en las busquedas</em>
+                        put:<a href='#'>/usuarios/ubicacion/:id{_ubicacion}{mostrarCorreo[true,false]}{mostrarTelefono[true,false]}{mostrarAPP[true,false]}{direccion}{telefono}</a><br />
+                        <em>actualizar la ubicación de un usuario, el usuario debe haber completado la información</em>
                     </li>
                     <li>
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                        put:<a href='#'>/usuarios/secundaria/:id{nombre}{descripcion}{experiencia}{_sector}</a><br />
-                        <em>actualizar la actividad secundaria de un usuario, el usuario debe haber completado la información básica, este usuario ya aparece en las busquedas</em>
+                        put:<a href='#'>/usuarios/clave/:id{clave}</a><br />
+                        <em>actualizar la clave de un usuario, el usuario debe haber confirmado el correo electrónico, devuelve el token</em>
                     </li>
                     <li>
                         get:<a href='#'>/usuarios/imagen/subir</a><br />
