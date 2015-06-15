@@ -12,6 +12,8 @@ function DBSector() {
     var idOtroSector = new ObjectId('557df15fa8d8bf84148ddfea');
     var idOtraOcupacion = new ObjectId('557e116b7e4ea9b81e000002');
     
+    var async = require('async');
+    
     // Adiciona un nuevo sector al sistema
     this.crearSector = function (reqSector, res) {
         response = res;
@@ -48,37 +50,50 @@ function DBSector() {
         response.json(ocupaciones);
     }
     
-    //var idUsuarioOcupacion;
-    var nombreOcupacion;
-    var indiceOcupacionUsuario;
-    var callbackActualizarOcupacion;
-    // Consulta una ocupacion, si no la encuentra la crea y retorna el id
-    this.buscarOcupacionID = function (pNombre, indiceOcupacion, callbackOcupacion) {
-        // idUsuarioOcupacion = idUsuario;
-        nombreOcupacion = pNombre;
-        indiceOcupacionUsuario = indiceOcupacion;
-        callbackActualizarOcupacion = callbackOcupacion;
-        var filtroNombre = new RegExp(pNombre, 'i');
-        modeloOcupacion.findOne({ nombre: filtroNombre }, 'nombre', function onOcupacionEncontrada(err, ocupacionEncontrada) {
-            if (err) callbackActualizarOcupacion(idOtraOcupacion, indiceOcupacionUsuario);
-            if (!ocupacionEncontrada) {
-                crearOcupacion(nombreOcupacion, indiceOcupacionUsuario);
-            } else {
-                callbackActualizarOcupacion(ocupacionEncontrada._id, indiceOcupacionUsuario);
+    // consulta una ocupacion por su id, si no la encuentra, la crea y retorna el id
+    // la libreria async se utiliza para sincronizar el llamado a los métodos, ya que 
+    // es necesario que se ejecuten en orden.
+    this.consultarID = function (pNombre, onIDEncontrado) {
+        var encontrado = false;
+        async.series([
+            // consulta una ocupacion por su nombre
+            function (callback) {
+                var filtroNombre = new RegExp(pNombre, 'i');
+                modeloOcupacion
+                .findOne({ nombre: filtroNombre })
+                .select('nombre')
+                .exec(function onOcupacionEncontrada(err, ocupacionEncontrada) {
+                    if (ocupacionEncontrada) {
+                        encontrado = true;
+                        callback(null, ocupacionEncontrada._id);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            },
+            // crea una nueva ocupacion cuando no existe
+            function (callback) {
+                if (!encontrado) {
+                    var nuevaOcupacion = new modeloOcupacion();
+                    nuevaOcupacion.nombre = pNombre;
+                    nuevaOcupacion._sector = idOtroSector
+                    nuevaOcupacion.save(function onOcupacionGuardada(err, ocupacionGuardada) {
+                        if (ocupacionGuardada) callback(null, ocupacionGuardada._id);
+                    });
+                }
+                else {
+                    callback(null);
+                }
             }
-        });
-    }
-    
-    // si no hay un error al crear la ocupacion, invoca la funciona para pasada en la busqueda
-    function crearOcupacion(pNombre, indice) {
-        var nuevaOcupacion = new modeloOcupacion();
-        nuevaOcupacion.nombre = pNombre;
-        nuevaOcupacion._sector = idOtroSector
-        nuevaOcupacion.save(function onOcupacionCreada(err, ocupacionGuardada) {
-            if (err)
-                callbackActualizarOcupacion(idOtraOcupacion, indice);
+            // finalmente, retorna un id encontrado, uno nuevo o uno por defecto correspondiente a "Otra".
+        ], function (err, results) {
+            if (results[0])
+                onIDEncontrado(null, results[0]);
+            else if (results[1])
+                onIDEncontrado(null, results[1]);
             else
-                callbackActualizarOcupacion(ocupacionGuardada._id, indice);
+                onIDEncontrado(null);
         });
     }
 }

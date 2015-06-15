@@ -169,7 +169,6 @@ function DBUsuario() {
         usuarioEncontrado.correo = informacionUsuario.correo;
         usuarioEncontrado.cedula = informacionUsuario.cedula;
         usuarioEncontrado.estado = EstadosUsuario.Completado;
-        usuarioEncontrado._ocupaciones = [];
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onActualizarUsuarioGuardado(err, usuarioGuardado) {
@@ -181,64 +180,31 @@ function DBUsuario() {
     
     // valor local de la ubicacion del usuario
     var ocupacionUsuario;
-    var idOcupacionPrincipal;
-    var idOcupacionSecundaria;
-    // actualizar ocupaciones
+    var ocupacionesUsuario;
+    // actualizar ocupaciones, utiliza la libreria async para realizar la
+    // actualización de las ocupaciones al mismo tiempo.
     this.actualizarOcupacion = function (_idUsuario, reqOcupacion, res) {
         response = res;
         ocupacionUsuario = reqOcupacion;
         ocupacionUsuario._id = _idUsuario;
-        idOcupacionPrincipal = -1;
-        idOcupacionSecundaria = -1;
+        ocupacionesUsuario = [];
         
         async.parallel([
-        // Ocupacion Principal
-            function (callback) {
-                dbSector.buscarOcupacionID(reqOcupacion.principal, 0, function onOcupacionEncontrada() {
-                    idOcupacionPrincipal = idOcupacion;
-                    callback();
-                });
-            },
-        // OcupacionSecundaria
-            function (callback) {
-                dbSector.buscarOcupacionID(reqOcupacion.principal, 1, function onOcupacionEncontrada() {
-                    idOcupacionSecundaria = idOcupacion;
-                    callback();
-                });
-            }
-        ], function (err) { //This function gets called after the two tasks have called their "task callbacks"
-            if (err) return next(err); //If an error occured, we let express/connect handle it by calling the "next" function
-            //Here locals will be populated with 'user' and 'posts'
-            
-            ocupacionUsuario._ocupaciones[0] = idOcupacionPrincipal;
-            ocupacionUsuario._ocupaciones[1] = idOcupacionSecundaria;
-
+            function (cb) { dbSector.consultarID(reqOcupacion.principal, cb); },
+            function (cb) { dbSector.consultarID(reqOcupacion.secundaria, cb); }
+        ], function (err, result) {
+            ocupacionesUsuario[0] = result[0];
+            ocupacionesUsuario[1] = result[1];
             var Ocupacion = mongoose.model('Ocupacion');
             modeloUsuario.findById(ocupacionUsuario._id, '_ocupaciones experiencia nivel cursos actividades', onActualizarOcupacionEncontrado);
-
         });
-        
-        dbSector.buscarOcupacionID(reqOcupacion.principal, 0, onOcupacionEncontrada);
-        dbSector.buscarOcupacionID(reqOcupacion.secundaria, 1, onOcupacionEncontrada);
-    }
-    
-    // actualiza el usuario una vez se hayan encontrado las dos ocupaciones
-    function onOcupacionEncontrada(idOcupacion, indiceOcupacion) {
-        if (indiceOcupacion === 0)
-            idOcupacionPrincipal = idOcupacion;
-        else if (indiceOcupacion === 1)
-            idOcupacionSecundaria = idOcupacion;
-        
-        if (idOcupacionPrincipal !== -1 && idOcupacionSecundaria !== -1) {
-            var Ocupacion = mongoose.model('Ocupacion');
-            modeloUsuario.findById(ocupacionUsuario._id, '_ocupaciones experiencia nivel cursos actividades', onActualizarOcupacionEncontrado);
-        }
     }
     
     function onActualizarOcupacionEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         
+        usuarioEncontrado._ocupaciones = ocupacionesUsuario;
         usuarioEncontrado.experiencia = ocupacionUsuario.experiencia;
         usuarioEncontrado.nivel = ocupacionUsuario.nivel;
         usuarioEncontrado.cursos = ocupacionUsuario.cursos;
@@ -250,28 +216,8 @@ function DBUsuario() {
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
             if (err) return response.send(err);
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
-            dbSector.buscarOcupacionID(ocupacionUsuario.principal, usuarioGuardado._id, 0, actualizarIDOcupacion);
-            dbSector.buscarOcupacionID(ocupacionUsuario.secundaria, usuarioGuardado._id, 1, actualizarIDOcupacion);
         });
-    }
-    
-    //// valor local de la clave del usuario
-    //var idOcupacionActualizada;
-    //var indiceOcupacionUsuario;
-    //function  actualizarIDOcupacion(_idUsuario, _idOcupacion, indiceOcupacion) {
-    //    idOcupacionActualizada = _idOcupacion;
-    //    indiceOcupacionUsuario = indiceOcupacion;
-    //    var Ocupacion = mongoose.model('Ocupacion');
-    //    modeloUsuario.findById(_idUsuario, '_ocupaciones', onActualizarIDOcupacionEncontrado);
-    //}
-    
-    //// si encontro el usuario, actualiza su clave y le genera un nuevo token de acceso
-    //function onActualizarIDOcupacionEncontrado(err, usuarioEncontrado) {
-    //    if (err) return response.send(err);
-    //    if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
-    //    usuarioEncontrado._ocupaciones[indiceOcupacionUsuario] = idOcupacionActualizada;
-    //    usuarioEncontrado.save();
-    //}
+    }    
     
     // valor local de la ubicacion del usuario
     var ubicacionUsuario;
