@@ -5,9 +5,12 @@
 function DBSector() {
     var modeloSector = require('../modelos/Sector');
     var modeloOcupacion = require('../modelos/Ocupacion');
-    var modeloEscolaridad = require('../modelos/Escolaridad');
     // referencia privada a la respuesta HTTP
     var response;
+    
+    var ObjectId = require('mongoose').Types.ObjectId;
+    var idOtroSector = new ObjectId('557df15fa8d8bf84148ddfea');
+    var idOtraOcupacion = new ObjectId('557e116b7e4ea9b81e000002');
     
     // Adiciona un nuevo sector al sistema
     this.crearSector = function (reqSector, res) {
@@ -33,7 +36,7 @@ function DBSector() {
         if (err) return res.send(err);
         response.json(sectores);
     }
-
+    
     // consulta las ocupaciones
     this.consultarOcupaciones = function (res) {
         response = res;
@@ -44,16 +47,39 @@ function DBSector() {
         if (err) return res.send(err);
         response.json(ocupaciones);
     }
-
-    // consulta los niveles de escolaridad
-    this.consultarEscolaridad = function (res) {
-        response = res;
-        modeloEscolaridad.find(onEncontrarEscolaridad, '_id nombre');
+    
+    //var idUsuarioOcupacion;
+    var nombreOcupacion;
+    var indiceOcupacionUsuario;
+    var callbackActualizarOcupacion;
+    // Consulta una ocupacion, si no la encuentra la crea y retorna el id
+    this.buscarOcupacionID = function (pNombre, indiceOcupacion, callbackOcupacion) {
+        // idUsuarioOcupacion = idUsuario;
+        nombreOcupacion = pNombre;
+        indiceOcupacionUsuario = indiceOcupacion;
+        callbackActualizarOcupacion = callbackOcupacion;
+        var filtroNombre = new RegExp(pNombre, 'i');
+        modeloOcupacion.findOne({ nombre: filtroNombre }, 'nombre', function onOcupacionEncontrada(err, ocupacionEncontrada) {
+            if (err) callbackActualizarOcupacion(idOtraOcupacion, indiceOcupacionUsuario);
+            if (!ocupacionEncontrada) {
+                crearOcupacion(nombreOcupacion, indiceOcupacionUsuario);
+            } else {
+                callbackActualizarOcupacion(ocupacionEncontrada._id, indiceOcupacionUsuario);
+            }
+        });
     }
     
-    function onEncontrarEscolaridad(err, escolaridad) {
-        if (err) return res.send(err);
-        response.json(escolaridad);
+    // si no hay un error al crear la ocupacion, invoca la funciona para pasada en la busqueda
+    function crearOcupacion(pNombre, indice) {
+        var nuevaOcupacion = new modeloOcupacion();
+        nuevaOcupacion.nombre = pNombre;
+        nuevaOcupacion._sector = idOtroSector
+        nuevaOcupacion.save(function onOcupacionCreada(err, ocupacionGuardada) {
+            if (err)
+                callbackActualizarOcupacion(idOtraOcupacion, indice);
+            else
+                callbackActualizarOcupacion(ocupacionGuardada._id, indice);
+        });
     }
 }
 

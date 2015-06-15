@@ -21,6 +21,11 @@ function DBUsuario() {
     var DBEtiqueta = require('./DBEtiqueta');
     var dbEtiqueta = new DBEtiqueta();
     
+    var DBSector = require('./DBSector');
+    var dbSector = new DBSector();
+    
+    var async = require('async');
+    
     // estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
     var EstadosUsuario = function () {
         return {
@@ -43,17 +48,26 @@ function DBUsuario() {
             'Posgrado': 5
         };
     }();
-    this.nivel = NivelesEstudios;
+    this.niveles = NivelesEstudios;
+    
+    // genero 1:Masculino , 2:Femenino
+    var Generos = function () {
+        return {
+            'Masculino': 1,
+            'Femenino': 2
+        };
+    }();
+    this.generos = Generos;
     
     // retorna la información de un usuario
     this.consultarUsuario = function (idUsuario, res) {
         response = res;
         var Ubicacion = mongoose.model('Ubicacion');
-        var Sector = mongoose.model('Sector');
+        var Ocupacion = mongoose.model('Ocupacion');
         modeloUsuario
         .findById(idUsuario)
-        .select('nombre apellidos nacimiento genero correo cedula estado _sectores experiencia nivel cursos ocupacion _ubicacion mostrarCorreo mostrarTelefono mostrarAPP direccion telefono')
-        .populate('_ubicacion _sectores')
+        .select('nombre apellidos nacimiento genero correo cedula estado _ocupaciones experiencia nivel cursos actividades _ubicacion mostrarCorreo mostrarTelefono mostrarAPP direccion telefono')
+        .populate('_ocupaciones _ubicacion')
         .exec(onEndConsultarUsuario);
     }
     
@@ -155,6 +169,7 @@ function DBUsuario() {
         usuarioEncontrado.correo = informacionUsuario.correo;
         usuarioEncontrado.cedula = informacionUsuario.cedula;
         usuarioEncontrado.estado = EstadosUsuario.Completado;
+        usuarioEncontrado._ocupaciones = [];
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onActualizarUsuarioGuardado(err, usuarioGuardado) {
@@ -164,29 +179,70 @@ function DBUsuario() {
         });
     }
     
-    // valor local de la ocupacion principal
+    // valor local de la ubicacion del usuario
     var ocupacionUsuario;
+    var idOcupacionPrincipal;
+    var idOcupacionSecundaria;
     // actualizar ocupaciones
     this.actualizarOcupacion = function (_idUsuario, reqOcupacion, res) {
         response = res;
         ocupacionUsuario = reqOcupacion;
-        var Sector = mongoose.model('Sector');
-        modeloUsuario.findById(_idUsuario, '_sectores experiencia nivel ocupacion', onActualizarOcupacionEncontrado);
+        ocupacionUsuario._id = _idUsuario;
+        idOcupacionPrincipal = -1;
+        idOcupacionSecundaria = -1;
+        
+        async.parallel([
+        // Ocupacion Principal
+            function (callback) {
+                dbSector.buscarOcupacionID(reqOcupacion.principal, 0, function onOcupacionEncontrada() {
+                    idOcupacionPrincipal = idOcupacion;
+                    callback();
+                });
+            },
+        // OcupacionSecundaria
+            function (callback) {
+                dbSector.buscarOcupacionID(reqOcupacion.principal, 1, function onOcupacionEncontrada() {
+                    idOcupacionSecundaria = idOcupacion;
+                    callback();
+                });
+            }
+        ], function (err) { //This function gets called after the two tasks have called their "task callbacks"
+            if (err) return next(err); //If an error occured, we let express/connect handle it by calling the "next" function
+            //Here locals will be populated with 'user' and 'posts'
+            
+            ocupacionUsuario._ocupaciones[0] = idOcupacionPrincipal;
+            ocupacionUsuario._ocupaciones[1] = idOcupacionSecundaria;
+
+            var Ocupacion = mongoose.model('Ocupacion');
+            modeloUsuario.findById(ocupacionUsuario._id, '_ocupaciones experiencia nivel cursos actividades', onActualizarOcupacionEncontrado);
+
+        });
+        
+        dbSector.buscarOcupacionID(reqOcupacion.principal, 0, onOcupacionEncontrada);
+        dbSector.buscarOcupacionID(reqOcupacion.secundaria, 1, onOcupacionEncontrada);
     }
-    // 
+    
+    // actualiza el usuario una vez se hayan encontrado las dos ocupaciones
+    function onOcupacionEncontrada(idOcupacion, indiceOcupacion) {
+        if (indiceOcupacion === 0)
+            idOcupacionPrincipal = idOcupacion;
+        else if (indiceOcupacion === 1)
+            idOcupacionSecundaria = idOcupacion;
+        
+        if (idOcupacionPrincipal !== -1 && idOcupacionSecundaria !== -1) {
+            var Ocupacion = mongoose.model('Ocupacion');
+            modeloUsuario.findById(ocupacionUsuario._id, '_ocupaciones experiencia nivel cursos actividades', onActualizarOcupacionEncontrado);
+        }
+    }
+    
     function onActualizarOcupacionEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         
-        var _sectores = [];
-        _sectores[0] = ocupacionUsuario._principal;
-        _sectores[1] = ocupacionUsuario._secundario;
-        
-        usuarioEncontrado._sectores = _sectores;
         usuarioEncontrado.experiencia = ocupacionUsuario.experiencia;
         usuarioEncontrado.nivel = ocupacionUsuario.nivel;
         usuarioEncontrado.cursos = ocupacionUsuario.cursos;
-        usuarioEncontrado.ocupacion = ocupacionUsuario.ocupacion;
+        usuarioEncontrado.actividades = ocupacionUsuario.actividades;
         // a partir de este momento el usuario ya aparece en las búsquedas
         usuarioEncontrado.estado = EstadosUsuario.Disponible;
         usuarioEncontrado.activo = true;
@@ -194,8 +250,28 @@ function DBUsuario() {
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
             if (err) return response.send(err);
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
+            dbSector.buscarOcupacionID(ocupacionUsuario.principal, usuarioGuardado._id, 0, actualizarIDOcupacion);
+            dbSector.buscarOcupacionID(ocupacionUsuario.secundaria, usuarioGuardado._id, 1, actualizarIDOcupacion);
         });
     }
+    
+    //// valor local de la clave del usuario
+    //var idOcupacionActualizada;
+    //var indiceOcupacionUsuario;
+    //function  actualizarIDOcupacion(_idUsuario, _idOcupacion, indiceOcupacion) {
+    //    idOcupacionActualizada = _idOcupacion;
+    //    indiceOcupacionUsuario = indiceOcupacion;
+    //    var Ocupacion = mongoose.model('Ocupacion');
+    //    modeloUsuario.findById(_idUsuario, '_ocupaciones', onActualizarIDOcupacionEncontrado);
+    //}
+    
+    //// si encontro el usuario, actualiza su clave y le genera un nuevo token de acceso
+    //function onActualizarIDOcupacionEncontrado(err, usuarioEncontrado) {
+    //    if (err) return response.send(err);
+    //    if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+    //    usuarioEncontrado._ocupaciones[indiceOcupacionUsuario] = idOcupacionActualizada;
+    //    usuarioEncontrado.save();
+    //}
     
     // valor local de la ubicacion del usuario
     var ubicacionUsuario;
@@ -209,7 +285,7 @@ function DBUsuario() {
     // si encontro el usuario, actualiza su ubicacion
     function onActualizarUbicacionEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
-        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        if (!usuarioEncontrado) response.send({ 'Error': 'Usuario no encontrado' });
         
         usuarioEncontrado._ubicacion = ubicacionUsuario._ubicacion;
         usuarioEncontrado.telefono = ubicacionUsuario.telefono;
@@ -226,9 +302,9 @@ function DBUsuario() {
         });
     }
     
-    // valor local de la ubicacion del usuario
+    // valor local de la clave del usuario
     var nuevaClaveUsuario;
-    // actualizar ocupaciones
+    // actualizar
     this.actualizarClave = function (_idUsuario, reqClave, res) {
         response = res;
         nuevaClaveUsuario = reqClave.clave;

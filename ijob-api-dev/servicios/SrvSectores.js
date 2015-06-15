@@ -29,11 +29,11 @@ router
     dbSector.consultarOcupaciones(res);
 });
 
-// consulta los niveles de estudio
-router
-  .route('/escolaridad')
-  .get(function (req, res) {
-    dbSector.consultarEscolaridad(res);
-});
+//// consulta los niveles de estudio
+//router
+//  .route('/escolaridad')
+//  .get(function (req, res) {
+//    dbSector.consultarEscolaridad(res);
+//});
 
 module.exports = router;

@@ -44,7 +44,6 @@
     <Compile Include="datos\SMTPMailer.js" />
     <Compile Include="modelos\Calificacion.js" />
     <Compile Include="modelos\Contacto.js" />
-    <Compile Include="modelos\Escolaridad.js" />
     <Compile Include="modelos\Etiqueta.js" />
     <Compile Include="modelos\Ocupacion.js" />
     <Compile Include="modelos\Sector.js" />

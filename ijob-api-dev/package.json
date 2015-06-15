@@ -13,7 +13,8 @@
         "uuid": "~2.0",
         "gridfs-stream": "~1.1",
         "multer": "~0.1",
-        "nodemailer": "~1.3"
+        "nodemailer": "~1.3",
+        "async": "~1.2.1"
     },
     "author": {
         "name": "Damian Del Castillo",

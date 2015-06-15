@@ -10,7 +10,8 @@ var usuarioSchema = new Schema({
     nombre: { type: String, required: true },
     apellidos: String,
     nacimiento: Date, 
-    genero: { type: String, required: true, enum: ['Masculino', 'Femenino'] },
+    // genero 1:Masculino , 2:Femenino
+    genero: { type: String, required: true, enum: [1, 2] , default: 0 },
     correo : { type: String, required: true, unique: true },
     clave: { type: String, requerid: true },
     // perfil - mi imagen,  id de la imagen guardada en la bd de imagenes
@@ -18,12 +19,12 @@ var usuarioSchema = new Schema({
     // perfil - datos personales
     cedula: { type: Number, unique: true },
     // perfil - ocupación
-    _sectores : [{ type: Schema.ObjectId, ref: 'Sector' }],
+    _ocupaciones : [{ type: Schema.ObjectId, ref: 'Ocupacion' }],
     experiencia: Number,
     // perfil - ocupación - nivel de estudios 1: bachiller, 2:técnico, 3:tecnológico, 4:profesional, 5:posgrado
-    nivel: { type: Number, default: 0, enum: [1, 2, 3, 4, 5] },
+    nivel: { type: Number, enum: [1, 2, 3, 4, 5], default: 0 },
     cursos: String,
-    ocupacion: String,
+    actividades: String,
     // perfil - informacion de contacto
     _ubicacion : { type: Schema.ObjectId , ref: 'Ubicacion' },
     telefono: Number,
@@ -34,7 +35,7 @@ var usuarioSchema = new Schema({
     // busquedas
     calificacion: { type: Number },   
     // busquedas - estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
-    estado: { type: Number, default: 0, enum: [1, 2, 3, 4, 5] },
+    estado: { type: Number, enum: [1, 2, 3, 4, 5], default: 0 },
     // administración del usuario
     creado: Date,
     modificado: Date,

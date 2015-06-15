@@ -150,4 +150,25 @@ router
     }
 });
 
+// ciclo de vida de un usuario
+router
+  .route('/usuario-estados')
+  .get(function (req, res) {
+    res.send({ EstadosUsuario: dbUsuario.estados });
+});
+
+// nivel de escolaridad
+router
+  .route('/usuario-escolaridad')
+  .get(function (req, res) {
+    res.send({ NivelesEstudios: dbUsuario.niveles });
+});
+
+// genero de la persona
+router
+  .route('/usuario-genero')
+  .get(function (req, res) {
+    res.send({ Generos: dbUsuario.generos });
+});
+
 module.exports = router;
