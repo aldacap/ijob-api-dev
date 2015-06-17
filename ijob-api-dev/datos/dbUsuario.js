@@ -66,7 +66,7 @@ function DBUsuario() {
         var Ocupacion = mongoose.model('Ocupacion');
         modeloUsuario
         .findById(idUsuario)
-        .select('nombre apellidos nacimiento genero correo cedula estado _ocupaciones experiencia nivel cursos actividades _ubicacion mostrarCorreo mostrarTelefono mostrarAPP direccion telefono')
+        .select('nombre apellidos nacimiento genero correo cedula estado _ocupaciones experiencia nivel cursos actividades _ubicacion mostrarCorreo mostrarTelefono mostrarAPP direccion telefono _imagen calificacion')
         .populate('_ocupaciones _ubicacion')
         .exec(onEndConsultarUsuario);
     }

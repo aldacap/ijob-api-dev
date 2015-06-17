@@ -41,20 +41,34 @@ function DBImagen() {
     this.consultarImagen = function (idArchivo, res) {
         response = res;
         
-        var Grid = require('gridfs-stream');
-        Grid.mongo = mongoose.mongo;
-        gfs = Grid(cliente.db);
-        // Valida que exista el archivo
-        gfs.findOne({ _id: idArchivo }, onEncontrarImagen);
+        if (idArchivo) {
+            var Grid = require('gridfs-stream');
+            Grid.mongo = mongoose.mongo;
+            gfs = Grid(cliente.db);
+            // Valida que exista el archivo
+            gfs.findOne({ _id: idArchivo }, onEncontrarImagen);
+        }
+        else {
+            res.statusCode = 404;
+            res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+            res.send({ message: 'Error, imágen no encontrada' });
+        }
     }
     
     // si encuentra el arhivo, lo envia en el response
     function onEncontrarImagen(err, imagenEncontrada) {
         if (err) response.send(err);
-        var readstream = gfs.createReadStream({
-            _id: imagenEncontrada._id
-        });
-        readstream.pipe(response);
+        if (imagenEncontrada) {
+            var readstream = gfs.createReadStream({
+                _id: imagenEncontrada._id
+            });
+            readstream.pipe(response);
+        }
+        else {
+            res.statusCode = 404;
+            res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+            res.send({ message: 'Error, imágen no encontrada' });
+        }
     }
     
     // Objeto Mongoose del usuario al que se le actualiza la imagen

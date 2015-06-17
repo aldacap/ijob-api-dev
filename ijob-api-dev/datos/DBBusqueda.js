@@ -57,7 +57,7 @@ function DBBusqueda() {
         queryPerfil.where('_ocupaciones.0').in(docs);
         queryPerfil.where('activo', 'true');
         queryPerfil.where('estado', 4);
-        queryPerfil.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion');
+        queryPerfil.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion actividades');
         queryPerfil.sort({ 'calificacion': 'descending' });
         queryPerfil.skip(10 * (reqAv.cantidad - 1));
         queryPerfil.limit(10 * reqAv.cantidad);

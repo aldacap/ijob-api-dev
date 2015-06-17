@@ -72,13 +72,13 @@ function DBContacto() {
             query.where('_usuarioSolicita', pUsuario);
             query.select('fecha _usuarioRecibe');
             query.sort({ 'fecha': 'asc' });
-            query.populate('_usuarioRecibe', 'nombre apellidos genero calificacion ocupaciones _imagen');
+            query.populate('_usuarioRecibe', 'nombre apellidos genero calificacion actividades _imagen ');
         }
         else {
             query.where('_usuarioRecibe', pUsuario);
             query.select('fecha _usuarioSolicita');
             query.sort({ 'fecha': 'asc' });
-            query.populate('_usuarioSolicita', 'nombre apellidos genero calificacion ocupaciones _imagen');
+            query.populate('_usuarioSolicita', 'nombre apellidos genero calificacion actividades _imagen ');
         }
         
         query.exec(onEncontrarSolicitudes);
