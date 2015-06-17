@@ -97,7 +97,7 @@ function DBBusqueda() {
 
             query.where('activo', 'true');
             query.where('estado', 4);
-            query.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion');
+            query.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion actividades');
             query.sort({ 'calificacion': 'descending' });
             query.skip(10 * (req.cantidad - 1));
             query.limit(10 * req.cantidad);
@@ -126,7 +126,7 @@ function DBBusqueda() {
 
         queryPerfil.where('activo', 'true');
         queryPerfil.where('estado', 4);
-        queryPerfil.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion');
+        queryPerfil.select('_id nombre apellidos calificacion ocupaciones genero _imagen _ocupaciones _ubicacion actividades');
         queryPerfil.sort({ 'calificacion': 'descending' });
         queryPerfil.skip(10 * (reqAv.cantidad - 1));
         queryPerfil.limit(10 * reqAv.cantidad);

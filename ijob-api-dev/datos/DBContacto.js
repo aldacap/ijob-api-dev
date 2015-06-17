@@ -95,11 +95,15 @@ function DBContacto() {
     // Obtener solicitudes de contacto activas
     this.buscarSolicitudes = function (pUsuario, res) {
         response = res;
+        var usuario = mongoose.model('Usuario');
         modeloContacto
             .find({ 'estado': { $in: [1, 3] } })
             .and([
             { $or: [{ '_usuarioSolicita': pUsuario }, { '_usuarioRecibe': pUsuario }] }
         ])
+            .select('fecha _usuarioSolicita _usuarioRecibe')
+            .populate('_usuarioSolicita', 'nombre apellidos genero calificacion actividades _imagen ')
+            .populate('_usuarioRecibe', 'nombre apellidos genero calificacion actividades _imagen ')
             .exec(onBuscarSolicitudes);
     }
     
