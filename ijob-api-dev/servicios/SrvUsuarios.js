@@ -83,7 +83,7 @@ router
   .route('/usuarios/ubicacion/:id')
   .put(seguridad.authenticate('bearer', { session: false }), function (req, res) {
     // solo se permite para usuarios confirmados    
-    if (req.user.estado >= dbUsuario.estados.Completado) {
+    if (req.user.estado >= dbUsuario.estados.Confirmado) {
         dbUsuario.actualizarUbicacion(req.params.id , req.body, res);
     }
     else {

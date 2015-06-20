@@ -112,7 +112,7 @@ function DBUsuario() {
         nuevoUsuario.apellidos = reqUsuario.apellidos;
         nuevoUsuario.nacimiento = reqUsuario.nacimiento;
         nuevoUsuario.genero = reqUsuario.genero;
-        nuevoUsuario.correo = reqUsuario.correo;
+        nuevoUsuario.correo = reqUsuario.correo.toLowerCase();
         nuevoUsuario.clave = reqUsuario.clave;
         // asigna un token de seguridad para la autenticación
         nuevoUsuario.token = uuid.v1();
@@ -168,7 +168,7 @@ function DBUsuario() {
         usuarioEncontrado.genero = informacionUsuario.genero;
         usuarioEncontrado.correo = informacionUsuario.correo;
         usuarioEncontrado.cedula = informacionUsuario.cedula;
-        usuarioEncontrado.estado = EstadosUsuario.Completado;
+        usuarioEncontrado.estado = EstadosUsuario.Confirmado;
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onActualizarUsuarioGuardado(err, usuarioGuardado) {
@@ -239,6 +239,7 @@ function DBUsuario() {
         usuarioEncontrado.mostrarTelefono = ubicacionUsuario.mostrarTelefono;
         usuarioEncontrado.mostrarAPP = ubicacionUsuario.mostrarAPP;
         usuarioEncontrado.direccion = ubicacionUsuario.direccion;
+        usuarioEncontrado.estado = EstadosUsuario.Completado;
         // a partir de este momento el usuario ya aparece en las búsquedas
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
