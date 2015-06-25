@@ -132,7 +132,7 @@ function DBUsuario() {
             if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
             var mensajeRegistro = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.id);
             mailer.enviarCorreo(usuarioGuardado.correo, 'Bienvenido a IJob', usuarioGuardado.id, mensajeRegistro);
-            response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id });
+            response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }
     
@@ -168,13 +168,12 @@ function DBUsuario() {
         usuarioEncontrado.genero = informacionUsuario.genero;
         usuarioEncontrado.correo = informacionUsuario.correo;
         usuarioEncontrado.cedula = informacionUsuario.cedula;
-        usuarioEncontrado.estado = EstadosUsuario.Confirmado;
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onActualizarUsuarioGuardado(err, usuarioGuardado) {
             if (err) return response.send(err);
             // Actualiza un usuario satisfatoriamente
-            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
+            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }
     
@@ -215,7 +214,7 @@ function DBUsuario() {
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
             if (err) return response.send(err);
-            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
+            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }    
     
@@ -245,7 +244,7 @@ function DBUsuario() {
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
             if (err) return response.send(err);
-            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id });
+            response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }
     
