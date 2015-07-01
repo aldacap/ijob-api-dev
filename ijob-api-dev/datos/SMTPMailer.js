@@ -1,15 +1,17 @@
 ﻿
 var Mailer = function () {
     var nodemailer = require('nodemailer');
+    // carga la cadena de conexión del archivo de configuración
+    var config = require('../config.json');
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'ijob.com.co@gmail.com',
-            pass: 'IjobColombia2015*'
+            user: config.SMTPUser,
+            pass: config.SMTPPass
         }
     });
     
-    this.enviarCorreo = function (to, asunto, mensajePlano,mensajeHTML ) {
+    this.enviarCorreo = function (to, asunto, mensajePlano, mensajeHTML) {
         transporter.sendMail({
             from: 'IJob <ijob.com.co@gmail.com>',
             to: to,
