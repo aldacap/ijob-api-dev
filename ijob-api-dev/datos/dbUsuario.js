@@ -238,7 +238,9 @@ function DBUsuario() {
         usuarioEncontrado.mostrarTelefono = ubicacionUsuario.mostrarTelefono;
         usuarioEncontrado.mostrarAPP = ubicacionUsuario.mostrarAPP;
         usuarioEncontrado.direccion = ubicacionUsuario.direccion;
-        usuarioEncontrado.estado = EstadosUsuario.Completado;
+        if (usuarioEncontrado.estado < EstadosUsuario.Completado) {
+            usuarioEncontrado.estado = EstadosUsuario.Completado;
+        }
         // a partir de este momento el usuario ya aparece en las búsquedas
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
