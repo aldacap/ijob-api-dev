@@ -26,6 +26,8 @@ app.use(parser.json());
 // acepta parametros por url encoded
 app.use(parser.urlencoded({ extended: false }));
 
+app.use('/api/media/imagenes', express.static('vistas/imagenes'));
+
 // middleware que procesa los archivos que se suben, se utiliza principalmente para las imagenes de perfil de los usuarios
 app.use(multer({
     dest: './uploads/',
