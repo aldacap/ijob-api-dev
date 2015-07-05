@@ -2,6 +2,9 @@
  * modulo express: rutas
  */
 var express = require('express');
+
+var cors = require('cors');
+
 // modulo de obtener los parametros de los request
 var parser = require('body-parser');
 // Crea una app express
@@ -11,6 +14,9 @@ var seguridad = require('./seguridad');
 
 // manejador de carga de imagenes
 var multer = require('multer');
+
+// This is CORS-enabled for all origins
+app.use(cors());
 
 // inicializa la autenticación
 app.use(seguridad.initialize());

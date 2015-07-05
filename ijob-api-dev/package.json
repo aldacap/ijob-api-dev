@@ -1,28 +1,29 @@
 {
-    "name": "ijob-api-dev",
-    "version": "0.0.0",
-    "description": "ijob-api-dev",
-    "main": "server.js",
-    "engines": {
-        "node": "0.12.4",
-        "npm": "^2.1.0"
-    },
-    "dependencies": {
-        "async": "^1.2.1",
-        "body-parser": "^1.13.1",
-        "express": "~4.13",
-        "gridfs-stream": "~1.1",
-        "jimp": "~0.2",
-        "mongoose": "^3.6.20",
-        "mongoose-unique-validator": "~0.4",
-        "multer": "~0.1",
-        "nodemailer": "^1.3.4",
-        "passport": ">= 0.0.0",
-        "passport-http-bearer": ">= 0.0.0",
-        "uuid": "~2.0"
-    },
-    "author": {
-        "name": "Damian Del Castillo",
-        "email": "aldacap@gmail.com"
-    }
+  "name": "ijob-api-dev",
+  "version": "0.0.0",
+  "description": "ijob-api-dev",
+  "main": "server.js",
+  "engines": {
+    "node": "0.12.4",
+    "npm": "^2.1.0"
+  },
+  "dependencies": {
+    "async": "^1.2.1",
+    "body-parser": "^1.0.2",
+    "cors": "^2.7.1",
+    "express": "^4.0.0",
+    "gridfs-stream": "~1.1",
+    "jimp": "~0.2",
+    "mongoose": "^3.6.20",
+    "mongoose-unique-validator": "~0.4",
+    "multer": "~0.1",
+    "nodemailer": "^1.3.4",
+    "passport": ">= 0.0.0",
+    "passport-http-bearer": ">= 0.0.0",
+    "uuid": "~2.0"
+  },
+  "author": {
+    "name": "Damian Del Castillo",
+    "email": "aldacap@gmail.com"
+  }
 }
