@@ -39,7 +39,8 @@ router
   .route('/usuarios/registrar/:id')
   .get(function (req, res) {
     dbUsuario.terminarRegistro(req.params.id, res);
-    res.sendFile(path.join(__dirname , '/vistas/RegistroCompleto.html'));
+    var strRutaArchivo = path.join(__dirname, '../vistas', 'registro-inline.html');
+    res.sendFile(strRutaArchivo);
 });
 
 // formulario de ejemplo que implementa el algoritmo de encriptación
