@@ -18,7 +18,7 @@ app.use(seguridad.initialize());
 // acepta parámetros en json
 app.use(parser.json());
 // acepta parametros por url encoded
-app.use(parser.urlencoded());
+app.use(parser.urlencoded({ extended: false }));
 
 // middleware que procesa los archivos que se suben, se utiliza principalmente para las imagenes de perfil de los usuarios
 app.use(multer({
@@ -28,30 +28,30 @@ app.use(multer({
 
 // rutas para las imagenes de los usuarios
 var srvImagenes = require('./SrvImagenes');
-app.use('/api', srvImagenes);
+app.use('/', srvImagenes);
 
 // rutas para los usuarios
 var srvUsuarios = require('./SrvUsuarios');
-app.use('/api', srvUsuarios);
+app.use('/', srvUsuarios);
 
 // rutas para los sectores
 var srvSectores = require('./SrvSectores');
-app.use('/api', srvSectores);
+app.use('/', srvSectores);
 
 // rutas para los ubicaciones
 var srvUbicaciones = require('./SrvUbicaciones');
-app.use('/api', srvUbicaciones);
+app.use('/', srvUbicaciones);
 
 // rutas para las calificaciones
 var srvCalificaciones = require('./SrvCalificaciones');
-app.use('/api', srvCalificaciones);
+app.use('/', srvCalificaciones);
 
 // rutas para los contactos
 var srvContactos = require('./SrvContactos');
-app.use('/api', srvContactos);
+app.use('/', srvContactos);
 
 // rutas para las busquedas
 var srvBusquedas = require('./SrvBusquedas');
-app.use('/api', srvBusquedas);
+app.use('/', srvBusquedas);
 
 module.exports = app;

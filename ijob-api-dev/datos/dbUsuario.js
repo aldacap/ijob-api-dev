@@ -26,6 +26,8 @@ function DBUsuario() {
     
     var async = require('async');
     
+    var config = require('../config.json');
+    
     // estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
     var EstadosUsuario = function () {
         return {
@@ -124,6 +126,8 @@ function DBUsuario() {
         nuevoUsuario.save(onUsuarioGuardado);
     }
     
+    var usuarioRegistradoId;
+    var usuarioRegistradoCorreo;
     // resultado de guardar un usuario
     function onUsuarioGuardado(err, usuarioGuardado) {
         if (err) return response.send(err);
@@ -131,9 +135,18 @@ function DBUsuario() {
         dbEtiqueta.consultarEtiqueta('correo-registrar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
             if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
             var mensajeRegistro = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.id);
-            mailer.enviarCorreo(usuarioGuardado.correo, 'Bienvenido a IJob', usuarioGuardado.id, mensajeRegistro);
+            usuarioRegistradoId = usuarioGuardado.id;
+            usuarioRegistradoCorreo = usuarioGuardado.correo;
+            mailer.leerArchivo('Bienvenida-inline.html', onEndLeerArchivoCorreo);
             response.send({ message: 'OK, usuario adicionado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
+    }
+    
+    function onEndLeerArchivoCorreo(err, html) {
+        if (err) return response.send(err);
+        var linkUsuario = config.ApiURL + '/usuarios/registrar/' + usuarioRegistradoId;
+        var htmlLink = html.replace('{url-confirmar-correo}', linkUsuario);
+        mailer.enviarCorreo(usuarioRegistradoCorreo, 'Bienvenido a IJob', usuarioRegistradoId, htmlLink);
     }
     
     var nombreArchivoImagen;
@@ -216,7 +229,7 @@ function DBUsuario() {
             if (err) return response.send(err);
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
-    }    
+    }
     
     // valor local de la ubicacion del usuario
     var ubicacionUsuario;

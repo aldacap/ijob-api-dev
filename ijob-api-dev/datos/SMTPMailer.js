@@ -1,6 +1,8 @@
 ﻿
 var Mailer = function () {
     var nodemailer = require('nodemailer');
+    var fs = require('fs');
+    var path = require('path');
     // carga la cadena de conexión del archivo de configuración
     var config = require('../config.json');
     var transporter = nodemailer.createTransport({
@@ -20,6 +22,18 @@ var Mailer = function () {
             html: mensajeHTML
         });
     }
+    
+    this.leerArchivo = function (strNombreArchivo, cb) {
+        var strRuta = path.join('./vistas/' , strNombreArchivo);
+        fs.readFile(strRuta, 'utf8', cb);
+    }
+    
+    var onEndLeerArchivo = function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log(data);
+    };
 }
 
 module.exports = Mailer;

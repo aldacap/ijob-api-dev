@@ -4,5 +4,6 @@
     "devImgConnStr_": "mongodb://localhost:27017/ijobi",
     "devImgConnStr": "mongodb://k1_user:k1_pass@ds039950.mongolab.com:39950/ijobi",
     "SMTPUser": "ijob.com.co@gmail.com",
-    "SMTPPass" :  "IjobColombia2015*"
+    "SMTPPass": "IjobColombia2015*",
+    "ApiURL": "http://ijob.com.co/api/"
 }
