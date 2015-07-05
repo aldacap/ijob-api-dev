@@ -8,7 +8,7 @@ var path = require('path');
 app.set('port', process.env.PORT || 8000);
 
 // página de inicio, no contiene ninguna información
-app.get('/', function onRequest(req, res) {
+app.get('/api', function onRequest(req, res) {
     res.sendFile(path.join(__dirname , '/vistas/index.html'));
 });
 

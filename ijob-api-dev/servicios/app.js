@@ -34,30 +34,30 @@ app.use(multer({
 
 // rutas para las imagenes de los usuarios
 var srvImagenes = require('./SrvImagenes');
-app.use('/', srvImagenes);
+app.use('/api', srvImagenes);
 
 // rutas para los usuarios
 var srvUsuarios = require('./SrvUsuarios');
-app.use('/', srvUsuarios);
+app.use('/api', srvUsuarios);
 
 // rutas para los sectores
 var srvSectores = require('./SrvSectores');
-app.use('/', srvSectores);
+app.use('/api', srvSectores);
 
 // rutas para los ubicaciones
 var srvUbicaciones = require('./SrvUbicaciones');
-app.use('/', srvUbicaciones);
+app.use('/api', srvUbicaciones);
 
 // rutas para las calificaciones
 var srvCalificaciones = require('./SrvCalificaciones');
-app.use('/', srvCalificaciones);
+app.use('/api', srvCalificaciones);
 
 // rutas para los contactos
 var srvContactos = require('./SrvContactos');
-app.use('/', srvContactos);
+app.use('/api', srvContactos);
 
 // rutas para las busquedas
 var srvBusquedas = require('./SrvBusquedas');
-app.use('/', srvBusquedas);
+app.use('/api', srvBusquedas);
 
 module.exports = app;
