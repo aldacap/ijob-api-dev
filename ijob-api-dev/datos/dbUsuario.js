@@ -7,6 +7,7 @@ function DBUsuario() {
     var modeloUsuario = require('../modelos/Usuario');
     var mongoose = require('mongoose');
     var smptMailer = require('./SMTPMailer.js');
+    var path = require('path');
     var mailer = new smptMailer();
     // modulo para generar los tokens
     var uuid = require('uuid');
@@ -338,12 +339,20 @@ function DBUsuario() {
     // encuentra un usuario en la BD con el id 
     function onTerminarRegistroEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
-        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
-        
-        usuarioEncontrado.estado = EstadosUsuario.Confirmado;
-        usuarioEncontrado.activo = true;
-        usuarioEncontrado.modificado = Date.now();
-        usuarioEncontrado.save();
+        var strRutaArchivo = path.join(__dirname, '../vistas', 'Registro-inline.html');
+
+        if (!usuarioEncontrado) {
+            return response.send({ 'Error': 'Usuario no encontrado' })
+        } else {
+            usuarioEncontrado.estado = EstadosUsuario.Confirmado;
+            usuarioEncontrado.activo = true;
+            usuarioEncontrado.modificado = Date.now();
+            usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
+                if (err) return response.send(err);
+                response.sendFile(strRutaArchivo);
+            });           
+             
+        };       
     }
     
     var bolEstadoDisponible;

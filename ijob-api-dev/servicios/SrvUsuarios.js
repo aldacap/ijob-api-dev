@@ -1,6 +1,5 @@
 ﻿// api para los usuarios
 var express = require('express');
-var path = require('path');
 var router = express.Router();
 var seguridad = require('./seguridad');
 var DBUsuario = require('../datos/dbUsuario');
@@ -39,8 +38,6 @@ router
   .route('/usuarios/registrar/:id')
   .get(function (req, res) {
     dbUsuario.terminarRegistro(req.params.id, res);
-    var strRutaArchivo = path.join(__dirname, '../vistas', 'registro-inline.html');
-    res.sendFile(strRutaArchivo);
 });
 
 // formulario de ejemplo que implementa el algoritmo de encriptación

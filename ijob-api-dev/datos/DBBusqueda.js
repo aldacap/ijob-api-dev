@@ -22,9 +22,11 @@ function DBBusqueda() {
         var re = new RegExp();
         var str = '';
         var lon = 0;
+        
+        var vOcupacion = pOcupacion.trim();
         reqAv = pCantidad;
         
-        var cadenas = pOcupacion.split(" ");
+        var cadenas = vOcupacion.split(" ");
         lon = cadenas[0].length;
         if (lon > 3) {
             str = cadenas[0].substring(0, lon - 1);
