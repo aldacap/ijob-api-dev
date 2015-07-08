@@ -9,6 +9,8 @@ function DBImagen() {
     var Grid = require('gridfs-stream');
     Grid.mongo = mongoose.mongo;
     
+    var path = require('path');
+    
     var fs = require('fs');
     // referencia privada a la respuesta HTTP
     var response;
@@ -114,7 +116,11 @@ function DBImagen() {
         if (imagenEncontrada) {
             var readstream = gfs.createReadStream({
                 _id: imagenEncontrada._id
-            });
+            });            
+            response.setHeader("Content-Type", "image/" + path.extname(imagenEncontrada.filename).replace('.', ''));
+            response.setHeader("Content-Length", imagenEncontrada.length);
+            response.setHeader("Cache-Control", ("max-age=private, max-age=3600, no-cache"));
+            response.statusCode = 200;
             readstream.pipe(response);
         }
         else {
