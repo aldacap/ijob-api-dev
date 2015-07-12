@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <style>
+        .img_asd {
+            width: 50px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        function jo() {
+            alert('jo');
+        };
+
+        function buscarUsuarios() {
+            var ok = $;
+
+            $.ajax({
+                url: "http://localhost:1337/api/busqueda/avanzada/",
+                contentType: 'application/json; charset=utf-8',
+                headers: { "X-HTTP-Method-Override": "PUT" },
+                type: 'PUT',
+                data: JSON.stringify({
+                    "ocupacion": " ",
+                    "categoria": " ",
+                    "ciudad": " ",
+                    //"calificacion": null,
+                    "cantidad": 1
+                }),
+                success: function (data) {
+                    //alert('ok');
+                    for (i = 0; i < data.length; i++) {
+                        //alert(usr);
+                        var img = document.createElement("IMG");
+                        img.src = "http://localhost:1337/api/usuarios/imagen/" + data[i]._id;
+                        img.setAttribute('class', 'img_asd');
+                        document.body.appendChild(img);
+
+                        var br = document.createElement("BR");
+                        document.body.appendChild(br);
+                    }
+                },
+                error: function (e, t, m) {
+                    alert('error');
+                    if (t === "timeout") {
+                        alert(e);
+                    } else {
+                        alert(m);
+                    }
+                }
+            });
+        };
+
+    </script>
+</head>
+<body>
+    Consulta de todos los usuarios
+    <script type="text/javascript">
+
+        buscarUsuarios();
+    </script>
+
+    <a href="javascript:buscarUsuarios();">listar</a>
+
+</body>
+</html>

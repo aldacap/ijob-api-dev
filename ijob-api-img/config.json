@@ -1,0 +1,6 @@
+﻿{
+    "devImgConnStr_": "mongodb://localhost:27017/ijobi",
+    "devImgConnStr": "mongodb://137.135.103.190:27017/ijobi",
+    "devImgConnStrLab": "mongodb://k1_user:k1_pass@ds039950.mongolab.com:39950/ijobi",
+    "ApiURL": "http://www.ijob.com.co/api/"
+}
