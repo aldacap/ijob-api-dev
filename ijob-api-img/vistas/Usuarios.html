@@ -21,7 +21,7 @@
             var ok = $;
 
             $.ajax({
-                url: "http://localhost:1337/imgs/",
+                url: "http://localhost:1337/img/usuarios/all/",
                 contentType: 'application/json; charset=utf-8',
                 headers: { "X-HTTP-Method-Override": "PUT" },
                 type: 'GET',
@@ -30,7 +30,7 @@
                     for (i = 0; i < data.length; i++) {
                         //alert(usr);
                         var img = document.createElement("IMG");
-                        img.src = "http://localhost:1337/img/" + data[i]._id;
+                        img.src = "http://localhost:1337/img/usuarios/imagen/" + data[i]._id;
                         img.setAttribute('class', 'img_asd');
                         document.body.appendChild(img);
 

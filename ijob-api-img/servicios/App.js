@@ -22,7 +22,7 @@ var handleError = function (err) {
     console.log(err);
 }
 
-app.get('/img/:idImagen', function (req, res) {
+app.get('/img/usuarios/imagen/:idImagen', function (req, res) {
     // res.send('Hello World')
     
     var gfs = Grid(db, mongo);
@@ -42,7 +42,7 @@ app.get('/img/:idImagen', function (req, res) {
 
 });
 
-app.get('/imgs/', function (req, res) {
+app.get('/img/usuarios/all/', function (req, res) {
     
     var findDocuments = function (db, callback) {        
         var collection = db.collection('fs.files');        
@@ -66,7 +66,7 @@ app.get('/imgs/', function (req, res) {
 });
 
 // prueba imagenes usuarios
-app.get('/prueba/', function (req, res) {
+app.get('/img/usuarios/prueba/', function (req, res) {
     res.sendfile("./vistas/usuarios.html");
 });
 
