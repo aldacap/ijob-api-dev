@@ -1,0 +1,23 @@
+{
+  "name": "ijob-api-img",
+  "version": "0.0.0",
+  "description": "ijob-api-img",
+  "main": "server.js",
+  "engines": {
+    "node": "0.12.4",
+    "npm": "^2.1.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.0.2",
+    "cors": "^2.7.1",
+    "express": "^4.0.0",
+    "gridfs-stream": "~1.1",
+    "jimp": "~0.2",
+    "mongodb": "^2.0.36",
+    "multer": "~0.1"
+  },
+  "author": {
+    "name": "Damian Del Castillo",
+    "email": "aldacap@gmail.com"
+  }
+}

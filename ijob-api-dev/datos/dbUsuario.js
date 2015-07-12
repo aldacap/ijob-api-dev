@@ -326,7 +326,7 @@ function DBUsuario() {
     }
     
     function onConsultarImagenEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) return response.send({ 'Error': 'Usuario no encontrado' });
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         dbImagen.consultarImagen(usuarioEncontrado._imagen, response);
     }

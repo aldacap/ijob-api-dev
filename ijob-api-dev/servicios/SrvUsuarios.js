@@ -47,6 +47,13 @@ router
     res.sendfile("./vistas/cifrar.html");
 });
 
+// prueba imagenes usuarios
+router
+  .route('/usuarios/prueba/imagenes')
+  .get(function (req, res) {
+    res.sendfile("./vistas/usuarios.html");
+});
+
 // actualizar la información personal de un usuario
 router
   .route('/usuarios/personal/:id')
@@ -126,12 +133,13 @@ router
     }
 });
 
-// consulta la imagen del perfil
-router
-  .route('/usuarios/imagen/:id')
-  .get(function (req, res) {
-    dbUsuario.consultarImagen(req.params.id, res);
-});
+// se pasa a la app de imagenes
+//// consulta la imagen del perfil
+//router
+//  .route('/usuarios/imagen/:id')
+//  .get(function (req, res) {
+//    dbUsuario.consultarImagen(req.params.id, res);
+//});
 
 // cambia la disponibilidad de un usuario
 router

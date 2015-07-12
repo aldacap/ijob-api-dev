@@ -72,7 +72,6 @@ function DBImagen() {
     }
     
     function onEndWriteArchivoRecortado(err, img) {
-        //console.log(b);                    
         fs.createReadStream(strArchivoRecortado).pipe(writeStream);
         // cuando termina de subir el archivo, lo borra y retorna el id
         writeStream.on('close', onEndSubirImagen);
@@ -83,8 +82,6 @@ function DBImagen() {
         // elimina el archivo que ya se subio
         fs.unlink(strArchivoOriginal, function (err) {
             if (err) response.send(err);
-            //return response.send(file);
-            
             fs.unlink(strArchivoRecortado, function (err) {
                 if (err) response.send(err);
                 return response.send(file);
@@ -92,42 +89,91 @@ function DBImagen() {
         });
     }
     
+    var imagenEnviada = false;
     // obtiene el archivo de una imagen por su ID
     this.consultarImagen = function (idArchivo, res) {
         response = res;
+        imagenEnviada = false;
+        if (!idArchivo) {
+            enviarImagenError('not-found');
+            return;
+        }
         
-        if (idArchivo) {
-            var Grid = require('gridfs-stream');
-            Grid.mongo = mongoose.mongo;
-            gfs = Grid(cliente.db);
-            // Valida que exista el archivo
-            gfs.findOne({ _id: idArchivo }, onEncontrarImagen);
-        }
-        else {
-            res.statusCode = 404;
-            res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-            res.send({ message: 'Error, imágen no encontrada' });
-        }
+        var Grid = require('gridfs-stream');
+        Grid.mongo = mongoose.mongo;
+        gfs = Grid(cliente.db);
+        // Valida que exista el archivo
+        gfs.findOne({ _id: idArchivo }, onEncontrarImagen);
     }
     
     // si encuentra el arhivo, lo envia en el response
     function onEncontrarImagen(err, imagenEncontrada) {
-        if (err) response.send(err);
-        if (imagenEncontrada) {
-            var readstream = gfs.createReadStream({
-                _id: imagenEncontrada._id
-            });            
-            response.setHeader("Content-Type", "image/" + path.extname(imagenEncontrada.filename).replace('.', ''));
-            response.setHeader("Content-Length", imagenEncontrada.length);
-            response.setHeader("Cache-Control", ("max-age=private, max-age=3600, no-cache"));
-            response.statusCode = 200;
-            readstream.pipe(response);
+        if (err) {
+            enviarImagenError('img-error');
+            return;
         }
-        else {
-            res.statusCode = 404;
-            res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-            res.send({ message: 'Error, imágen no encontrada' });
+        
+        if (!imagenEncontrada) {
+            enviarImagenError('bad-file');
+            return;
         }
+        
+        if (!imagenEnviada) {
+            var strMime = "image/";
+            var strExt = path.extname(imagenEncontrada.filename).replace('.', '');
+            strMime = strExt === 'jpg' ?  strMime + 'jpeg'  : strMime + strExt;
+            
+            try {
+                response.setHeader("Content-Type", strMime);
+                response.setHeader("Content-Length", imagenEncontrada.length);
+                response.setHeader('Content-Disposition', 'inline; filename="' + imagenEncontrada.filename + '"');
+                //response.statusCode = 200;
+                
+                var readstream = gfs.createReadStream({
+                    _id: imagenEncontrada._id
+                });
+                
+                // Add this to ensure that the out.txt's file descriptor is closed in case of error.
+                response.on('error', function (err) {
+                    readstream.end();
+                });
+                
+                readstream.pipe(response);
+                imagenEnviada = true;
+            }
+            catch (error) {
+                console.log(error + ' archivo: ' + imagenEncontrada.filename);
+            }
+
+            
+        }
+       // }
+    }
+    
+    function enviarImagenError(img) {
+        if (!imagenEnviada) {
+            
+            try {
+                var strRutaArchivo = path.join(__dirname, '../vistas/imagenes/', img + '.png');
+                var stats = fs.statSync(strRutaArchivo);
+                var fileSizeInBytes = stats["size"];
+                response.setHeader("Content-Type", "image/png");
+                response.setHeader("Content-Length", fileSizeInBytes);
+                //response.sendFile(strRutaArchivo);
+                
+                var readStream = fs.createReadStream(filePath);
+                // We replaced all the event handlers with a simple call to readStream.pipe()
+                readStream.pipe(response);
+                
+                imagenEnviada = true;
+            } 
+            catch (error) {
+                console.log(error + ' archivo: ' + img);
+            }
+
+        }
+        //var bitmap = fs.readFileSync(strRutaArchivo);
+        //return new Buffer(bitmap).toString('base64');
     }
     
     // Objeto Mongoose del usuario al que se le actualiza la imagen
@@ -135,15 +181,10 @@ function DBImagen() {
     // Carga un archivo desde la carpeta uploads
     this.subirImagenUsuario = function (usuario, nombreArchivo, res) {
         response = res;
-        // idUsuario = _idUsuario;        
         usuarioImagen = usuario;
         gfs = Grid(cliente.db);
         //// streaming to gridfs, filename to store in mongodb
-        //var writestream = gfs.createWriteStream({ filename: nombreArchivo });
-        //fs.createReadStream('./uploads/' + nombreArchivo).pipe(writestream);
         //// cuando termina de subir el archivo, lo borra y retorna el id
-        //writestream.on('close', onEndSubirImagenUsuario);
-        
         writeStream = gfs.createWriteStream({
             filename: nombreArchivo
         });
@@ -181,7 +222,6 @@ function DBImagen() {
     }
     
     function onEndUsuarioWriteArchivoRecortado(err, img) {
-        //console.log(b);                    
         fs.createReadStream(strArchivoRecortado).pipe(writeStream);
         // cuando termina de subir el archivo, lo borra y retorna el id
         writeStream.on('close', onEndUsuarioSubirImagen);
@@ -192,12 +232,8 @@ function DBImagen() {
         // elimina el archivo que ya se subio
         fs.unlink(strArchivoOriginal, function (err) {
             if (err) response.send(err);
-            //return response.send(file);
-            
             fs.unlink(strArchivoRecortado, function (err) {
                 if (err) response.send(err);
-                //return response.send(file);
-                
                 // actualiza el usuario que se paso por referencia
                 usuarioImagen._imagen = file._id;
                 usuarioImagen.save(function onUsuarioActualizado(err, usuarioActualizado) {
@@ -208,22 +244,6 @@ function DBImagen() {
             });
         });
     }
-
-    //// termino de subir el archivo a la bd
-    //function onEndSubirImagenUsuario(file) {
-    //    // elimina el archivo que ya se subio
-    //    fs.unlink('./uploads/' + file.filename, function (err) {
-    //        if (err) response.send(err);
-    //        // actualiza el usuario que se paso por referencia
-    //        usuarioImagen._imagen = file._id;
-    //        usuarioImagen.save(function onUsuarioActualizado(err, usuarioActualizado) {
-    //            if (err) return response.send(err);
-    //            response.json(usuarioActualizado);
-    //        });
-    //    });
-    //}
-
-
 }
 
 module.exports = DBImagen;
