@@ -76,10 +76,10 @@ function DBBusqueda() {
         var Usuario = mongoose.model('Usuario');
         var query = modeloUsuario.find({});
               
-        if (req.idCategoria && !req.idOcupacion) {
+        if (req.categoria && !req.ocupacion) {
             reqAv = req;
             var query2 = modeloOcupacion.find({});
-            query2.where('_sector', req.idCategoria);
+            query2.where('_sector', req.categoria);
             query2.select('_id');
             query2.exec(onBuscarAvanzada);
         }
@@ -89,12 +89,12 @@ function DBBusqueda() {
                 query.where('calificacion').gte(req.calificacion);
             }
             
-            if (req.idOcupacion) {
-                query.where('_ocupaciones.0').equals(req.idOcupacion);
+            if (req.ocupacion) {
+                query.where('_ocupaciones.0').equals(req.ocupacion);
             }
             
-            if (req.idCiudad) {
-                query.where('_ubicacion').equals(req.idCiudad);
+            if (req.ciudad) {
+                query.where('_ubicacion').equals(req.ciudad);
             }
 
             query.where('activo', 'true');
@@ -118,12 +118,16 @@ function DBBusqueda() {
         var queryPerfil = modeloUsuario.find({});
         queryPerfil.where('_ocupaciones.0').in(docs);
         
-        if (reqAv.idOcupacion) {
-            queryPerfil.where('_ocupaciones.0').equals(reqAv.idOcupacion);
+        if (reqAv.calificacion) {
+            queryPerfil.where('calificacion').gte(reqAv.calificacion);
         }
         
-        if (reqAv.idCiudad) {
-            queryPerfil.where('_ubicacion').equals(reqAv.idCiudad);
+        if (reqAv.ocupacion) {
+            queryPerfil.where('_ocupaciones.0').equals(reqAv.ocupacion);
+        }
+        
+        if (reqAv.ciudad) {
+            queryPerfil.where('_ubicacion').equals(reqAv.ciudad);
         }
 
         queryPerfil.where('activo', 'true');
