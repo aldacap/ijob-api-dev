@@ -157,7 +157,7 @@ router
     }
 });
 
-// ciclo de vida de un usuario
+// ciclo de vida de un usuario 
 router
   .route('/usuario-estados')
   .get(function (req, res) {
@@ -176,6 +176,13 @@ router
   .route('/usuario-genero')
   .get(function (req, res) {
     res.send({ Generos: dbUsuario.generos });
+});
+
+// elimina un usuario de la BD - SOLO PARA PRUEBAS
+router
+  .route('/usuarios/eliminar/:id')
+  .get(function (req, res) {
+    dbUsuario.eliminarRegistro(req.params.id, res);
 });
 
 module.exports = router;

@@ -340,7 +340,7 @@ function DBUsuario() {
     function onTerminarRegistroEncontrado(err, usuarioEncontrado) {
         if (err) return response.send(err);
         var strRutaArchivo = path.join(__dirname, '../vistas', 'Registro-inline.html');
-
+        
         if (!usuarioEncontrado) {
             return response.send({ 'Error': 'Usuario no encontrado' })
         } else {
@@ -350,9 +350,9 @@ function DBUsuario() {
             usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
                 if (err) return response.send(err);
                 response.sendFile(strRutaArchivo);
-            });           
+            });
              
-        };       
+        }        ;
     }
     
     var bolEstadoDisponible;
@@ -371,6 +371,18 @@ function DBUsuario() {
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save();
         response.send({ message: 'OK, Se actualizó la disponibilidad', estado: bolEstadoDisponible ?  'Disponible' : 'NoDisponible' });
+    }
+    
+    // Elimina un usuario - SOLO PARA PRUEBAS
+    this.eliminarRegistro = function (_idUsuario, res) {
+        response = res;
+        modeloUsuario.findOneAndRemove({ _id: _idUsuario }, onEliminarRegistro);
+    }
+    // encuentra un usuario en la BD con el id 
+    function onEliminarRegistro(err, usuarioEncontrado) {
+        if (err) return response.send(err);
+        if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
+        response.send({ message: 'OK, Se eliminó el usuario' });
     }
 }
 
