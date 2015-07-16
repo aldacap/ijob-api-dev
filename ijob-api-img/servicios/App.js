@@ -1,4 +1,4 @@
-﻿var express = require('express')
+var express = require('express')
 var app = express()
 //var gfs = require('../datos/DBImagen');
 
@@ -10,11 +10,13 @@ var Grid = require('gridfs-stream');
 // for this example we'll just create one: 
 var db = new mongo.Db('ijobi', new mongo.Server("137.135.103.190", 27017));
 
-
 // make sure the db instance is open before passing into `Grid` 
 db.open(function (err) {
     if (err) return handleError(err);
  
+	 db.authenticate('img_api_user', '1m9Us3r*', function(err, res) {
+	     if (err) return handleError(err);
+	});
   // all set! 
 })
 
