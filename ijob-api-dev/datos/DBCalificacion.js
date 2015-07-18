@@ -6,6 +6,8 @@ function DBCalificacion() {
     var modeloCalificacion = require('../modelos/Calificacion');
     var modeloContacto = require('../modelos/Contacto');
     var modeloUsuario = require('../modelos/Usuario');
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var mongoose = require('mongoose');
     // referencia privada a la respuesta HTTP
     var response;
@@ -40,6 +42,11 @@ function DBCalificacion() {
         
         modeloCalificacion.findOne({ _id: reqCalificacion.body.idCalificacion }, function agregarCal(err, calificacion) {
             if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'agregarCalificacion';
+                audit.descripcion = descripcion;
+                audit.save();
                 return response.send(err);
             }
             calificacion.puntuacion = resultado;
@@ -60,21 +67,42 @@ function DBCalificacion() {
     
     // Resultado de actualizar una calificacion pendiente
     function onCalificacionActualizada(err, calificacionActualizada) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'agregarCalificacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         var vSumCals = 0;
         var vCont = 0;
         var vUsuario = calificacionActualizada._usuarioRecibe;
         
         // actualiza la calificacion del usuario        
         modeloCalificacion.find({ _usuarioRecibe: vUsuario }, function (err, cals) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'agregarCalificacion';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             cals.forEach(function (cal) {
                 vSumCals = vSumCals + cal.puntuacion;
                 vCont = vCont + 1;
             });
             var nuevaCal = (vSumCals / vCont).toFixed(1);
             modeloUsuario.findById(vUsuario, function (err, usuario) {
-                if (err) return response.send(err);
+                if (err) {
+                    var descripcion = err.toString();
+                    audit.fecha = new Date();
+                    audit.metodo = 'agregarCalificacion';
+                    audit.descripcion = descripcion;
+                    audit.save();
+                    return response.send(err);
+                }
                 usuario.calificacion = nuevaCal;
                 
                 // se actualiza la calificacion del usuario
@@ -85,6 +113,11 @@ function DBCalificacion() {
         // instancia una solicitud de contacto para actualizar el estado
         modeloContacto.findOne({ _id: calificacionActualizada._idContacto }, function onContactoEncontrado(err, contactoEncontrado) {
             if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'agregarCalificacion';
+                audit.descripcion = descripcion;
+                audit.save();
                 return response.send(err);
             }
             var estado = contactoEncontrado.estado;
@@ -96,7 +129,14 @@ function DBCalificacion() {
             }
             
             contactoEncontrado.save(function onContactoActualizado(err, contactoActualizado) {
-                if (err) return response.send(err);
+                if (err) {
+                    var descripcion = err.toString();
+                    audit.fecha = new Date();
+                    audit.metodo = 'agregarCalificacion';
+                    audit.descripcion = descripcion;
+                    audit.save();
+                    return response.send(err);
+                }
                 response.send({ message: 'OK, calificacion actualizada', _id: calificacionActualizada._id });
             });
         });
@@ -130,7 +170,12 @@ function DBCalificacion() {
     // resultado de consultar calificaciones
     function onEncontrarCalificaciones(err, calificaciones) {
         if (err) {
-            return res.send(err);
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarCalificacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
         }
         response.json(calificaciones);
     }
@@ -150,7 +195,12 @@ function DBCalificacion() {
     // resultado de consultar calificaciones pendientes
     function onBuscarCalificaciones(err, calificaciones) {
         if (err) {
-            return res.send(err);
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'buscarCalificacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
         }
         response.json(calificaciones);
     }

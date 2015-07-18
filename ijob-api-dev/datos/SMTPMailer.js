@@ -1,5 +1,7 @@
 ﻿
 var Mailer = function () {
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var nodemailer = require('nodemailer');
     var fs = require('fs');
     var path = require('path');
@@ -30,6 +32,11 @@ var Mailer = function () {
     
     var onEndLeerArchivo = function (err, data) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarID';
+            audit.descripcion = descripcion;
+            audit.save();
             return console.log(err);
         }
         console.log(data);

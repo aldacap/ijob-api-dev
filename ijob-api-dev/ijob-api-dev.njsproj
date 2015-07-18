@@ -42,6 +42,7 @@
     <Compile Include="datos\DBUbicacion.js" />
     <Compile Include="datos\DBUsuario.js" />
     <Compile Include="datos\SMTPMailer.js" />
+    <Compile Include="modelos\Auditoria.js" />
     <Compile Include="modelos\Calificacion.js" />
     <Compile Include="modelos\Contacto.js" />
     <Compile Include="modelos\Etiqueta.js" />

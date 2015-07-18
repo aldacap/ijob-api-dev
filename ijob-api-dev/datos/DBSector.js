@@ -5,6 +5,8 @@
 function DBSector() {
     var modeloSector = require('../modelos/Sector');
     var modeloOcupacion = require('../modelos/Ocupacion');
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     // referencia privada a la respuesta HTTP
     var response;
     
@@ -24,7 +26,14 @@ function DBSector() {
     
     // resultado de guardar un sector
     function onSectorGuardado(err, sectorGuardado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'crearSector';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         response.send({ message: 'OK, sector adicionado', _id: sectorGuardado._id });
     }
     
@@ -35,7 +44,14 @@ function DBSector() {
     }
     
     function onEncontrarSectores(err, sectores) {
-        if (err) return res.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarSectores';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         response.json(sectores);
     }
     
@@ -46,7 +62,14 @@ function DBSector() {
     }
     
     function onEncontrarOcupaciones(err, ocupaciones) {
-        if (err) return res.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarOcupaciones';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         response.json(ocupaciones);
     }
     
@@ -88,6 +111,13 @@ function DBSector() {
             }
             // finalmente, retorna un id encontrado, uno nuevo o uno por defecto correspondiente a "Otra".
         ], function (err, results) {
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'consultarID';
+                audit.descripcion = descripcion;
+                audit.save();
+            }
             if (results[0])
                 onIDEncontrado(null, results[0]);
             else if (results[1])

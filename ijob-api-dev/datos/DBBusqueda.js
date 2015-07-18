@@ -7,6 +7,8 @@ function DBBusqueda() {
     var modeloUsuario = require('../modelos/Usuario');
     var modeloSector = require('../modelos/Sector');
     var modeloOcupacion = require('../modelos/Ocupacion');
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var mongoose = require('mongoose');
     var response;
     var categoria = null;
@@ -52,7 +54,12 @@ function DBBusqueda() {
     // resultado de la busqueda
     function onBuscarPerfiles(err, ocups) {
         if (err) {
-            return res.send(err);
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'buscarPerfiles';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
         }
         docs = ocups.map(function (ocups) { return ocups._id; });
         var queryPerfil = modeloUsuario.find({});
@@ -112,7 +119,12 @@ function DBBusqueda() {
     // resultado de la busqueda
     function onBuscarAvanzada(err, ocups) {
         if (err) {
-            return res.send(err);
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'buscarAvanzada';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
         }
         docs = ocups.map(function (ocups) { return ocups._id; });
         var queryPerfil = modeloUsuario.find({});
@@ -143,7 +155,12 @@ function DBBusqueda() {
     
     function onEncontrarPerfiles(err, perfiles) {
         if (err) {
-            return res.send(err);
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'buscarPerfiles';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
         }
         response.json(perfiles);
     }

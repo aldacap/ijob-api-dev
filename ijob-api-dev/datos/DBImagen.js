@@ -1,6 +1,8 @@
 ﻿// Imagenes almacenadas en la bd, a diferecia de los otros modelos, este no necesita un eschema
 function DBImagen() {
     
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var mongoose = require('mongoose');
     // Cliente de imagenes,se utiliza una bd diferente por desempeño y modificabilidad
     var cliente = require('./ClienteImagenes.js');
@@ -81,9 +83,23 @@ function DBImagen() {
     function onEndSubirImagen(file) {
         // elimina el archivo que ya se subio
         fs.unlink(strArchivoOriginal, function (err) {
-            if (err) response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'subirImagen';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             fs.unlink(strArchivoRecortado, function (err) {
-                if (err) response.send(err);
+                if (err) {
+                    var descripcion = err.toString();
+                    audit.fecha = new Date();
+                    audit.metodo = 'subirImagen';
+                    audit.descripcion = descripcion;
+                    audit.save();
+                    return response.send(err);
+                }
                 return response.send(file);
             });
         });
@@ -109,6 +125,11 @@ function DBImagen() {
     // si encuentra el arhivo, lo envia en el response
     function onEncontrarImagen(err, imagenEncontrada) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarImagen';
+            audit.descripcion = descripcion;
+            audit.save();
             enviarImagenError('img-error');
             return;
         }
@@ -231,13 +252,27 @@ function DBImagen() {
     function onEndUsuarioSubirImagen(file) {
         // elimina el archivo que ya se subio
         fs.unlink(strArchivoOriginal, function (err) {
-            if (err) response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'subirImagenUsuario';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             fs.unlink(strArchivoRecortado, function (err) {
                 if (err) response.send(err);
                 // actualiza el usuario que se paso por referencia
                 usuarioImagen._imagen = file._id;
                 usuarioImagen.save(function onUsuarioActualizado(err, usuarioActualizado) {
-                    if (err) return response.send(err);
+                    if (err) {
+                        var descripcion = err.toString();
+                        audit.fecha = new Date();
+                        audit.metodo = 'subirImagenUsuario';
+                        audit.descripcion = descripcion;
+                        audit.save();
+                        return response.send(err);
+                    }
                     response.json(usuarioActualizado);
                 });
 

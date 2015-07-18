@@ -5,6 +5,8 @@
 function DBUsuario() {
     var modeloUbicacion = require('../modelos/Ubicacion');
     var modeloUsuario = require('../modelos/Usuario');
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var mongoose = require('mongoose');
     var smptMailer = require('./SMTPMailer.js');
     var path = require('path');
@@ -27,7 +29,7 @@ function DBUsuario() {
     
     var async = require('async');
     
-    var config = require('../config.json');
+    var config = require('../config.json');    
     
     // estados: 1:registrado, 2:confirmado, 3:completado, 4:disponible, 5:no disponible
     var EstadosUsuario = function () {
@@ -76,7 +78,14 @@ function DBUsuario() {
     
     // retorna el usuario encontrado en formato json
     function onEndConsultarUsuario(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarUsuario';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         response.json(usuarioEncontrado);
     }
     
@@ -88,7 +97,14 @@ function DBUsuario() {
     
     // retorna el usuario encontrado en formato json
     function onUsuarioEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'autenticarUsuario';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         response.json(usuarioEncontrado);
     }
     
@@ -101,7 +117,14 @@ function DBUsuario() {
     
     // retorna la respuesta
     function onUsuarioValidado(err, usuarioEncontrado) {
-        if (err) return callbackDone(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'validarUsuario';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) { return callbackDone(null, false); }
         return callbackDone(null, usuarioEncontrado, { scope: 'all' });
     }
@@ -131,7 +154,14 @@ function DBUsuario() {
     var usuarioRegistradoCorreo;
     // resultado de guardar un usuario
     function onUsuarioGuardado(err, usuarioGuardado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'registrarUsuario';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         
         dbEtiqueta.consultarEtiqueta('correo-registrar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
             if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
@@ -144,7 +174,14 @@ function DBUsuario() {
     }
     
     function onEndLeerArchivoCorreo(err, html) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'registrarUsuario';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         var linkUsuario = config.ApiURL + '/usuarios/registrar/' + usuarioRegistradoId;
         var htmlLink = html.replace('{url-confirmar-correo}', linkUsuario);
         mailer.enviarCorreo(usuarioRegistradoCorreo, 'Bienvenido a IJob', usuarioRegistradoId, htmlLink);
@@ -156,7 +193,15 @@ function DBUsuario() {
         response = res;
         nombreArchivoImagen = nombreArchivo;
         modeloUsuario.findById(_idUsuario, 'correo _imagen', function onUsuarioImagenEncontrado(err, usuarioEncontrado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarImagen';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
+
             if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
             // sube la imagen a la bd de imagenes y actualiza el usuario
             dbImagen.subirImagenUsuario(usuarioEncontrado, nombreArchivoImagen, response);
@@ -173,7 +218,15 @@ function DBUsuario() {
     
     // encuentra un usuario en la BD con el id, actualiza su informacion personal
     function onActualizarInformacionEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'actualizarInformacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
+
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         
         usuarioEncontrado.nombre = informacionUsuario.nombre;
@@ -185,7 +238,14 @@ function DBUsuario() {
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onActualizarUsuarioGuardado(err, usuarioGuardado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarInformacion';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             // Actualiza un usuario satisfatoriamente
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
@@ -214,7 +274,15 @@ function DBUsuario() {
     }
     
     function onActualizarOcupacionEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'actualizarOcupacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
+
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         
         usuarioEncontrado._ocupaciones = ocupacionesUsuario;
@@ -227,7 +295,14 @@ function DBUsuario() {
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarOcupacion';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }
@@ -243,7 +318,15 @@ function DBUsuario() {
     }
     // si encontro el usuario, actualiza su ubicacion
     function onActualizarUbicacionEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'actualizarUbicacion';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
+
         if (!usuarioEncontrado) response.send({ 'Error': 'Usuario no encontrado' });
         
         usuarioEncontrado._ubicacion = ubicacionUsuario._ubicacion;
@@ -257,7 +340,15 @@ function DBUsuario() {
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarUbicacion';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
+
             response.send({ message: 'OK, usuario actualizado', _id: usuarioGuardado._id, estado: usuarioGuardado.estado });
         });
     }
@@ -272,7 +363,14 @@ function DBUsuario() {
     }
     // si encontro el usuario, actualiza su clave y le genera un nuevo token de acceso
     function onActualizarClaveEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'actualizarClave';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         
         usuarioEncontrado.token = uuid.v1();
@@ -280,7 +378,14 @@ function DBUsuario() {
         usuarioEncontrado.activo = true;
         usuarioEncontrado.modificado = Date.now();
         usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarClave';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             response.send({ message: 'OK, usuario actualizado', token: usuarioGuardado.token });
         });
     }
@@ -294,7 +399,14 @@ function DBUsuario() {
     var nuevaClave;
     // busca un usuario con su correo y le genera una clave aleatoria
     function onUsuarioRecordarEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'recordarClave';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         // genera una clave aleatoria y la codifica
         nuevaClave = cifrador.random(8);
@@ -308,10 +420,24 @@ function DBUsuario() {
     
     // Consulta el cuerpo de un mensaje en la bd y envía un correo con su nueva clave
     function onUsuarioRecordarEncontradoGuardado(err, usuarioGuardado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'recordarClave';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         
         dbEtiqueta.consultarEtiqueta('correo-recordar', function onEtiquetaEncontrada(err, etiquetaEncontrada) {
-            if (err) response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'recordarClave';
+                audit.descripcion = descripcion;
+                audit.save();
+                response.json({ 'Mensaje': 'No se encontro el cuerpo del mensaje' });
+            }
             var mensajeRecordarClave = etiquetaEncontrada.esCO.replace('{0}', usuarioGuardado.correo);
             mensajeRecordarClave = mensajeRecordarClave.replace('{1}', nuevaClave);
             mailer.enviarCorreo(usuarioGuardado.correo, 'Clave IJob', nuevaClave, mensajeRecordarClave);
@@ -326,7 +452,14 @@ function DBUsuario() {
     }
     
     function onConsultarImagenEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send({ 'Error': 'Usuario no encontrado' });
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarImagen';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         dbImagen.consultarImagen(usuarioEncontrado._imagen, response);
     }
@@ -338,7 +471,14 @@ function DBUsuario() {
     }
     // encuentra un usuario en la BD con el id 
     function onTerminarRegistroEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'terminarRegistro';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         var strRutaArchivo = path.join(__dirname, '../vistas', 'Registro-inline.html');
         
         if (!usuarioEncontrado) {
@@ -348,11 +488,18 @@ function DBUsuario() {
             usuarioEncontrado.activo = true;
             usuarioEncontrado.modificado = Date.now();
             usuarioEncontrado.save(function onUsuarioActualizado(err, usuarioGuardado) {
-                if (err) return response.send(err);
+                if (err) {
+                    var descripcion = err.toString();
+                    audit.fecha = new Date();
+                    audit.metodo = 'terminarRegistro';
+                    audit.descripcion = descripcion;
+                    audit.save();
+                    return response.send(err);
+                }
                 response.sendFile(strRutaArchivo);
             });
              
-        }        ;
+        };
     }
     
     var bolEstadoDisponible;
@@ -364,7 +511,14 @@ function DBUsuario() {
     }
     // encuentra un usuario en la BD con el id 
     function onCambiarDisponibilidadEncontrado(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'cambiarDisponibilidad';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         usuarioEncontrado.estado = bolEstadoDisponible ?  EstadosUsuario.Disponible : EstadosUsuario.NoDisponible;
         usuarioEncontrado.activo = true;
@@ -380,7 +534,14 @@ function DBUsuario() {
     }
     // encuentra un usuario en la BD con el id 
     function onEliminarRegistro(err, usuarioEncontrado) {
-        if (err) return response.send(err);
+        if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'eliminarRegistro';
+            audit.descripcion = descripcion;
+            audit.save();
+            return response.send(err);
+        }
         if (!usuarioEncontrado) return response.send({ 'Error': 'Usuario no encontrado' });
         response.send({ message: 'OK, Se eliminó el usuario' });
     }

@@ -6,6 +6,8 @@ function DBContacto() {
     var modeloContacto = require('../modelos/Contacto');
     var DBCalificacion = require('./DBCalificacion.js');
     var dbCalificacion = new DBCalificacion();
+    var modeloAuditoria = require('../modelos/Auditoria');
+    var audit = new modeloAuditoria();
     var mongoose = require('mongoose');
     // referencia privada a la respuesta HTTP
     var response;
@@ -23,6 +25,11 @@ function DBContacto() {
     // resultado de guardar una solicitud de contacto
     function onContactoGuardado(err, contactoGuardado) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'solicitarContacto';
+            audit.descripcion = descripcion;
+            audit.save();
             return response.send(err);
         }
         response.send({ message: 'OK, solicitud de contacto adicionada', _id: contactoGuardado._id });
@@ -41,6 +48,11 @@ function DBContacto() {
     // resultado de actualizar el estado de una solicitud de contacto
     function onContactoEncontrado(err, contactoEncontrado) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'actualizarContacto';
+            audit.descripcion = descripcion;
+            audit.save();
             return response.send(err);
         }
         
@@ -54,7 +66,14 @@ function DBContacto() {
         contactoEncontrado.estado = vEstado;
         
         contactoEncontrado.save(function onContactoActualizado(err, contactoActualizado) {
-            if (err) return response.send(err);
+            if (err) {
+                var descripcion = err.toString();
+                audit.fecha = new Date();
+                audit.metodo = 'actualizarContacto';
+                audit.descripcion = descripcion;
+                audit.save();
+                return response.send(err);
+            }
             response.send({ message: 'OK, contacto actualizado', _id: contactoActualizado._id });
         });
     }
@@ -87,6 +106,11 @@ function DBContacto() {
     // resultado de consultar solicitudes de contacto pendients
     function onEncontrarSolicitudes(err, solicitudes) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'consultarSolicitudes';
+            audit.descripcion = descripcion;
+            audit.save();
             return response.send(err);
         }
         response.json(solicitudes);
@@ -110,6 +134,11 @@ function DBContacto() {
     // resultado de consultar solicitudes de contacto
     function onBuscarSolicitudes(err, solicitudes) {
         if (err) {
+            var descripcion = err.toString();
+            audit.fecha = new Date();
+            audit.metodo = 'buscarSolicitudes';
+            audit.descripcion = descripcion;
+            audit.save();
             return response.send(err);
         }
         response.json(solicitudes);
