@@ -62,4 +62,8 @@ app.use('/api', srvContactos);
 var srvBusquedas = require('./SrvBusquedas');
 app.use('/api', srvBusquedas);
 
+// Inscripción suscriptores landing page
+var srvSuscriptores = require('./SrvSuscriptores');
+app.use('/api', srvSuscriptores);
+
 module.exports = app;

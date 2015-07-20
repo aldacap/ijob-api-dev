@@ -40,9 +40,11 @@
     <Compile Include="datos\DBImagen.js" />
     <Compile Include="datos\DBSector.js" />
     <Compile Include="datos\DBUbicacion.js" />
+    <Compile Include="datos\DBSuscriptor.js" />
     <Compile Include="datos\DBUsuario.js" />
     <Compile Include="datos\SMTPMailer.js" />
     <Compile Include="modelos\Auditoria.js" />
+    <Compile Include="modelos\Suscriptor.js" />
     <Compile Include="modelos\Calificacion.js" />
     <Compile Include="modelos\Contacto.js" />
     <Compile Include="modelos\Etiqueta.js" />
@@ -60,6 +62,7 @@
     <Compile Include="servicios\SrvSectores.js" />
     <Compile Include="servicios\SrvImagenes.js" />
     <Compile Include="servicios\SrvUbicaciones.js" />
+    <Compile Include="servicios\SrvSuscriptores.js" />
     <Compile Include="servicios\SrvUsuarios.js" />
     <None Include="137.135.103.190.pubxml" />
     <Content Include="config.json" />
